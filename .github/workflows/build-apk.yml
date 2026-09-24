@@ -1,0 +1,87 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Check signing secrets
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ]; then
+            echo "::error::Missing KEYSTORE_BASE64 or KEYSTORE_PASSWORD secret. See README, step 3."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Generate icons and splash
+        run: npx @capacitor/assets generate --android
+        continue-on-error: true
+
+      - name: Patch Android project
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: node scripts/patch-android.js
+
+      - name: Sync web code into Android
+        run: npx cap sync android
+
+      - name: Build release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Sign APK
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KS_B64" | base64 -d > release.keystore
+          BT="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          "$BT/zipalign" -p -f 4 android/app/build/outputs/apk/release/app-release-unsigned.apk aligned.apk
+          "$BT/apksigner" sign --ks release.keystore --ks-key-alias loop \
+            --ks-pass env:KS_PASS --key-pass env:KS_PASS --out Loop.apk aligned.apk
+          "$BT/apksigner" verify Loop.apk
+          rm release.keystore
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Loop-apk-${{ github.run_number }}
+          path: Loop.apk
+
+      - name: Publish as a release (easy phone download)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Loop 1.0.${{ github.run_number }}
+          files: Loop.apk
+          make_latest: true

@@ -1,0 +1,15 @@
+{
+  "appId": "app.loop.habits",
+  "appName": "Loop",
+  "webDir": "www",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto",
+    "backgroundColor": "#3346F0"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_loop",
+      "iconColor": "#3346F0"
+    }
+  }
+}

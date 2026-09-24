@@ -1,0 +1,7 @@
+node_modules/
+android/
+*.keystore
+KEYSTORE_BASE64.txt
+aligned.apk
+*.apk
+.DS_Store
