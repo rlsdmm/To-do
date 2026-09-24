@@ -18,14 +18,131 @@ const AppPlugin = isNative ? P.App : null;
 // ---------- Constants ----------
 const STORE_KEY = 'loop-state-v1';
 const DIFF = { 1: 10, 2: 20, 3: 35 };
-const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const DAY_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]; // Monday first
 const EMOJIS = ['✅', '💪', '🏃', '💧', '📚', '🧘', '🥗', '💊', '🛏️', '🧹', '💼', '📦', '📈', '🎯', '✍️', '🦷', '🌱', '🧠', '🎸', '💰'];
-const RANKS = ['Rookie', 'Starter', 'Regular', 'Committed', 'Grinder', 'Machine', 'Relentless', 'Unstoppable', 'Legend'];
 const NOTIF_HORIZON_DAYS = 14;
 const NOTIF_MAX = 400;
 const TEST_NOTIF_ID = 99999;
+
+// =========================================================
+// Translations (pt-BR is the default)
+// =========================================================
+const I18N = {
+  'pt-BR': {
+    daysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    daysLong: ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'],
+    ranks: ['Novato', 'Aprendiz', 'Constante', 'Dedicado', 'Determinado', 'Máquina', 'Implacável', 'Imparável', 'Lenda'],
+    nudges: ['Uma vitória rápida te espera.', 'Marque e pegue seu XP.', 'Passo pequeno, sequência grande.', 'Você disse que ia fazer. Bora.'],
+    tabToday: 'Hoje', tabStats: 'Estatísticas', addHabit: 'Adicionar hábito',
+    level: 'Nível', toLevel: 'faltam {n} para o nível {l}', xpAria: 'XP para o próximo nível',
+    today: 'Hoje', doneOf: '<strong>{d}</strong> de {t} feitas',
+    dayRun: (n) => `${n} ${n === 1 ? 'dia' : 'dias'}`, dayRunTitle: 'Dias seguidos com pelo menos um hábito feito',
+    timeLeft: 'restantes de {t}', timeAllDone: 'Tempo de hoje concluído', timeDoneOf: '{t} feitos hoje',
+    todo: 'A fazer', done: 'Feitas', later: 'Hoje não', show: 'Mostrar', hide: 'Ocultar',
+    clearedTitle: 'Dia concluído', clearedText: 'Tudo feito. Seus hábitos voltam quando for a hora.',
+    noneTitle: 'Nada para hoje', noneText: 'Aproveite a folga.',
+    emptyTitle: 'Monte sua rotina', emptyText: 'Adicione o que você quer fazer todo dia ou toda semana. Marque como feito para ganhar XP e aumentar suas sequências.',
+    examples: 'Ver exemplos',
+    backTomorrow: 'Volta amanhã', backMonday: 'Volta segunda', backDay: 'Volta {day}', finished: 'Concluída',
+    everyDay: 'Todo dia', weeklyLast: 'Semanal, último dia', weeklyLeft: 'Semanal, faltam {n} dias',
+    oneTime: 'Uma vez', dueOn: 'Prazo {d}', todayLbl: 'Hoje', onDate: 'Em {d}', tomorrow: 'Amanhã',
+    markDone: 'Marcar como feita', markUndone: 'Desmarcar', edit: 'Editar',
+    inARow: '🔥 {n} seguidas em {t}', dayClearedToast: 'Dia concluído! +25 XP de bônus',
+    habitSaved: 'Hábito salvo', habitAdded: 'Hábito adicionado', habitDeleted: 'Hábito excluído',
+    needName: 'Dê um nome primeiro', pickDay: 'Escolha pelo menos um dia',
+    confirmDelete: 'Excluir "{t}"? O histórico e o XP dele também serão apagados.',
+    newHabit: 'Novo hábito', editHabit: 'Editar hábito', name: 'Nome', namePh: 'ex.: Treino, Beber água, Ler',
+    icon: 'Ícone', repeats: 'Repete', freqDaily: 'Diário', freqDays: 'Alguns dias', freqWeekly: 'Semanal', freqOnce: 'Uma vez',
+    hintDaily: 'Volta toda manhã.', hintDays: 'Só aparece nos dias que você escolher.',
+    hintWeekly: 'Faça uma vez em qualquer dia da semana. Reinicia toda segunda.',
+    hintOnce: 'Uma tarefa comum. Sai da lista depois que você concluir.',
+    onTheseDays: 'Nestes dias', date: 'Data', duration: 'Duração',
+    durationHint: 'Opcional. Entra na soma do tempo do dia.',
+    reminder: 'Lembrete', onWord: 'na', effort: 'Esforço',
+    easy: 'Fácil <b>+10</b>', medium: 'Médio <b>+20</b>', hard: 'Difícil <b>+35</b>',
+    delete: 'Excluir', saveHabit: 'Salvar hábito',
+    backupTitle: 'Backup', backupHint: 'Guarde este texto em um lugar seguro. Para restaurar, cole um backup aqui e toque em Restaurar.',
+    copy: 'Copiar', restore: 'Restaurar', backupCopied: 'Backup copiado',
+    confirmRestore: 'Substituir tudo no app por este backup?', restored: 'Backup restaurado', badBackup: 'Esse texto não é um backup válido',
+    levelUp: 'Subiu de nível', keepGoing: 'Continuar',
+    progress: 'Seu progresso', checkoffs: 'Concluídas', runLbl: 'Sequência', bestRun: 'Melhor', last16: 'Últimas 16 semanas',
+    less: 'Menos', more: 'Mais', streaks: 'Sequências', bestTotal: 'melhor {b}, total {t}', timeSpent: 'Tempo investido',
+    settings: 'Configurações', language: 'Idioma', sounds: 'Sons', soundsSub: 'Toca um som ao marcar algo como feito',
+    testReminder: 'Enviar lembrete de teste', testSub: 'Chega em 5 segundos',
+    backupRow: 'Backup e restauração', backupSub: 'Guarde uma cópia dos seus hábitos e histórico',
+    notifOff: 'Lembretes desligados. Ative as notificações do Loop nas configurações do Android.',
+    notifBrowser: 'Lembretes funcionam no app Android, não no navegador',
+    testSent: 'Lembrete de teste em 5 segundos. Pode bloquear o celular.', testBody: 'Os lembretes estão funcionando.',
+    streakBody: '🔥 {n} seguidas. Não quebre a sequência.', channelName: 'Lembretes de hábitos', channelDesc: 'Lembretes dos seus hábitos',
+    ex: ['Beber 3L de água', 'Treino', 'Ler 10 páginas', 'Revisão semanal'],
+  },
+  en: {
+    daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    daysLong: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    ranks: ['Rookie', 'Starter', 'Regular', 'Committed', 'Grinder', 'Machine', 'Relentless', 'Unstoppable', 'Legend'],
+    nudges: ['A quick win is waiting.', 'Check it off and grab your XP.', 'Tiny step, big streak.', 'You said you would. Let\u2019s go.'],
+    tabToday: 'Today', tabStats: 'Stats', addHabit: 'Add a habit',
+    level: 'Level', toLevel: '{n} to level {l}', xpAria: 'XP to next level',
+    today: 'Today', doneOf: '<strong>{d}</strong> of {t} done',
+    dayRun: (n) => `${n} ${n === 1 ? 'day' : 'days'}`, dayRunTitle: 'Days in a row with at least one habit done',
+    timeLeft: 'left of {t}', timeAllDone: "Today's time is done", timeDoneOf: '{t} done today',
+    todo: 'To do', done: 'Done', later: 'Not today', show: 'Show', hide: 'Hide',
+    clearedTitle: 'Day cleared', clearedText: "Everything's done. Your habits come back when they're due.",
+    noneTitle: 'Nothing due today', noneText: 'Enjoy the break.',
+    emptyTitle: 'Build your loop', emptyText: 'Add the things you want to do every day or every week. Check them off to earn XP and grow your streaks.',
+    examples: 'Try examples',
+    backTomorrow: 'Back tomorrow', backMonday: 'Back Monday', backDay: 'Back {day}', finished: 'Finished',
+    everyDay: 'Every day', weeklyLast: 'Weekly, last day', weeklyLeft: 'Weekly, {n} days left',
+    oneTime: 'One time', dueOn: 'Due {d}', todayLbl: 'Today', onDate: 'On {d}', tomorrow: 'Tomorrow',
+    markDone: 'Mark done', markUndone: 'Mark not done', edit: 'Edit',
+    inARow: '🔥 {n} in a row on {t}', dayClearedToast: 'Day cleared! +25 XP bonus',
+    habitSaved: 'Habit saved', habitAdded: 'Habit added', habitDeleted: 'Habit deleted',
+    needName: 'Give it a name first', pickDay: 'Pick at least one day',
+    confirmDelete: 'Delete "{t}"? Its history and XP will be removed too.',
+    newHabit: 'New habit', editHabit: 'Edit habit', name: 'Name', namePh: 'e.g. Workout, Drink water, Read',
+    icon: 'Icon', repeats: 'Repeats', freqDaily: 'Daily', freqDays: 'Some days', freqWeekly: 'Weekly', freqOnce: 'Once',
+    hintDaily: 'Comes back every morning.', hintDays: 'Only shows up on the days you pick.',
+    hintWeekly: 'Do it once any day of the week. Resets every Monday.',
+    hintOnce: 'A regular to-do. Leaves the list after you finish it.',
+    onTheseDays: 'On these days', date: 'Date', duration: 'Time needed',
+    durationHint: "Optional. Counts toward today's total time.",
+    reminder: 'Reminder', onWord: 'on', effort: 'Effort',
+    easy: 'Easy <b>+10</b>', medium: 'Medium <b>+20</b>', hard: 'Hard <b>+35</b>',
+    delete: 'Delete', saveHabit: 'Save habit',
+    backupTitle: 'Backup', backupHint: 'Copy this text somewhere safe. To restore, paste a backup here and tap Restore.',
+    copy: 'Copy', restore: 'Restore', backupCopied: 'Backup copied',
+    confirmRestore: 'Replace everything in the app with this backup?', restored: 'Backup restored', badBackup: "That text isn't a valid backup",
+    levelUp: 'Level up', keepGoing: 'Keep going',
+    progress: 'Your progress', checkoffs: 'Check-offs', runLbl: 'Day run', bestRun: 'Best run', last16: 'Last 16 weeks',
+    less: 'Less', more: 'More', streaks: 'Streaks', bestTotal: 'best {b}, total {t}', timeSpent: 'Time invested',
+    settings: 'Settings', language: 'Language', sounds: 'Sounds', soundsSub: 'Chime when you check something off',
+    testReminder: 'Send a test reminder', testSub: 'Arrives in 5 seconds',
+    backupRow: 'Backup and restore', backupSub: 'Keep a copy of your habits and history',
+    notifOff: 'Reminders are off. Turn on notifications for Loop in Android settings.',
+    notifBrowser: 'Reminders work in the Android app, not the browser',
+    testSent: 'Test reminder in 5 seconds. You can lock your phone.', testBody: 'Reminders are working. Nice.',
+    streakBody: '🔥 {n} in a row. Keep it alive.', channelName: 'Habit reminders', channelDesc: 'Reminders for your habits',
+    ex: ['Drink 3L of water', 'Workout', 'Read 10 pages', 'Weekly review'],
+  },
+};
+const lang = () => (state.settings && I18N[state.settings.lang] ? state.settings.lang : 'pt-BR');
+const L = () => I18N[lang()];
+function t(key, params = {}) {
+  let s = L()[key];
+  if (s === undefined) s = I18N.en[key] ?? key;
+  if (typeof s === 'function') return s(params.n);
+  return String(s).replace(/\{(\w+)\}/g, (_, k) => (params[k] ?? ''));
+}
+const cap1 = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// Minutes → "1h 25min"
+function fmtDur(min) {
+  min = Math.max(0, Math.round(min));
+  const h = Math.floor(min / 60), m = min % 60;
+  if (h && m) return `${h}h ${m}min`;
+  if (h) return `${h}h`;
+  return `${m}min`;
+}
 
 // ---------- Date helpers (all local time) ----------
 const pad = (n) => String(n).padStart(2, '0');
@@ -35,7 +152,7 @@ const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); r
 const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
 const todayKey = () => keyOf(new Date());
 const weekStartKey = (k) => { const d = parseKey(k); return keyOf(addDays(d, -((d.getDay() + 6) % 7))); };
-const fmtDate = (k) => parseKey(k).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+const fmtDate = (k) => parseKey(k).toLocaleDateString(lang(), { day: 'numeric', month: 'short' });
 
 // ---------- Utilities ----------
 const $ = (s, root = document) => root.querySelector(s);
@@ -47,7 +164,8 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 // =========================================================
 // State & storage
 // =========================================================
-let state = { tasks: [], log: [], settings: { sound: true } };
+const DEFAULT_SETTINGS = { sound: true, lang: 'pt-BR' };
+let state = { tasks: [], log: [], settings: { ...DEFAULT_SETTINGS } };
 
 async function loadState() {
   let raw = null;
@@ -58,8 +176,8 @@ async function loadState() {
   if (raw) {
     try {
       const parsed = JSON.parse(raw);
-      state = { tasks: [], log: [], settings: { sound: true }, ...parsed };
-      state.settings = { sound: true, ...(parsed.settings || {}) };
+      state = { tasks: [], log: [], ...parsed };
+      state.settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
     } catch (e) { console.warn('bad saved data', e); }
   }
 }
@@ -144,65 +262,74 @@ const totalXP = () => state.log.reduce((s, e) => s + (e.xp || 0), 0);
 function levelInfo(xp) {
   let lvl = 1, need = 100, left = xp;
   while (left >= need) { left -= need; lvl++; need = 100 + (lvl - 1) * 40; }
-  return { lvl, into: left, need, rank: RANKS[Math.min(Math.floor((lvl - 1) / 3), RANKS.length - 1)] };
+  const ranks = L().ranks;
+  return { lvl, into: left, need, rank: ranks[Math.min(Math.floor((lvl - 1) / 3), ranks.length - 1)] };
 }
 
 function categorize() {
   const today = todayKey();
   const todo = [], done = [], later = [];
-  for (const t of state.tasks) {
-    if (isDone(t)) {
-      if (t.freq === 'once') {
-        const e = entriesFor(t)[0];
-        if (e && e.date === today) done.push(t); // finished one-timers leave after today
-      } else done.push(t);
-    } else if (isDueToday(t)) todo.push(t);
-    else later.push(t);
+  for (const task of state.tasks) {
+    if (isDone(task)) {
+      if (task.freq === 'once') {
+        const e = entriesFor(task)[0];
+        if (e && e.date === today) done.push(task); // finished one-timers leave after today
+      } else done.push(task);
+    } else if (isDueToday(task)) todo.push(task);
+    else later.push(task);
   }
-  const timeVal = (t) => (t.remind && t.time ? t.time : '99:99');
+  const timeVal = (x) => (x.remind && x.time ? x.time : '99:99');
   todo.sort((a, b) => timeVal(a).localeCompare(timeVal(b)) || a.createdAt - b.createdAt);
-  const lastTs = (t) => Math.max(0, ...entriesFor(t).map((e) => e.ts));
+  const lastTs = (x) => Math.max(0, ...entriesFor(x).map((e) => e.ts));
   done.sort((a, b) => lastTs(b) - lastTs(a));
   return { todo, done, later };
 }
 
+// Today's time budget: everything in To do + Done, minus what's done.
+function timeBudget() {
+  const { todo, done } = categorize();
+  const dur = (x) => x.duration || 0;
+  const left = todo.reduce((s, x) => s + dur(x), 0);
+  const spent = done.reduce((s, x) => s + dur(x), 0);
+  return { left, spent, total: left + spent };
+}
+
 function nextDueLabel(task) {
-  if (task.freq === 'daily') return 'Back tomorrow';
-  if (task.freq === 'weekly') return 'Back Monday';
-  if (task.freq === 'once') return 'Finished';
-  const t = startOfToday();
+  if (task.freq === 'daily') return t('backTomorrow');
+  if (task.freq === 'weekly') return t('backMonday');
+  if (task.freq === 'once') return t('finished');
+  const today = startOfToday();
   for (let i = 1; i <= 7; i++) {
-    const d = addDays(t, i);
-    if (task.days.includes(d.getDay())) return i === 1 ? 'Back tomorrow' : `Back ${DAY_LONG[d.getDay()]}`;
+    const d = addDays(today, i);
+    if (task.days.includes(d.getDay())) return i === 1 ? t('backTomorrow') : t('backDay', { day: L().daysLong[d.getDay()] });
   }
   return '';
 }
 function repeatLabel(task) {
-  if (task.freq === 'daily') return 'Every day';
+  if (task.freq === 'daily') return t('everyDay');
   if (task.freq === 'weekly') {
     const left = 7 - ((new Date().getDay() + 6) % 7);
-    return left === 1 ? 'Weekly, last day' : `Weekly, ${left} days left`;
+    return left === 1 ? t('weeklyLast') : t('weeklyLeft', { n: left });
   }
   if (task.freq === 'once') {
-    if (!task.date) return 'One time';
-    if (task.date < todayKey()) return `Due ${fmtDate(task.date)}`;
-    return task.date === todayKey() ? 'Today' : `On ${fmtDate(task.date)}`;
+    if (!task.date) return t('oneTime');
+    if (task.date < todayKey()) return t('dueOn', { d: fmtDate(task.date) });
+    return task.date === todayKey() ? t('todayLbl') : t('onDate', { d: fmtDate(task.date) });
   }
-  if (task.days.length === 7) return 'Every day';
-  return WEEK_ORDER.filter((d) => task.days.includes(d)).map((d) => DAY_SHORT[d]).join(' ');
+  if (task.days.length === 7) return t('everyDay');
+  return WEEK_ORDER.filter((d) => task.days.includes(d)).map((d) => L().daysShort[d]).join(' ');
 }
 function nextLaterLabel(task) {
-  if (task.freq === 'once' && task.date) return `On ${fmtDate(task.date)}`;
-  const t = startOfToday();
+  if (task.freq === 'once' && task.date) return t('onDate', { d: fmtDate(task.date) });
+  const today = startOfToday();
   for (let i = 1; i <= 7; i++) {
-    const d = addDays(t, i);
-    if (task.days.includes(d.getDay())) return i === 1 ? 'Tomorrow' : DAY_LONG[d.getDay()];
+    const d = addDays(today, i);
+    if (task.days.includes(d.getDay())) return i === 1 ? t('tomorrow') : cap1(L().daysLong[d.getDay()]);
   }
   return '';
 }
 function xpPreview(task) {
-  const s = streakOf(task);
-  return DIFF[task.diff] + Math.min(s * 2, 30);
+  return DIFF[task.diff] + Math.min(streakOf(task) * 2, 30);
 }
 
 // =========================================================
@@ -215,8 +342,7 @@ function completeTask(task, originEl) {
   const entry = { id: uid(), taskId: task.id, date: today, ts: Date.now(), xp: 0 };
   state.log.push(entry);
   const s = streakOf(task);
-  const bonus = Math.min((s - 1) * 2, 30);
-  entry.xp = DIFF[task.diff] + Math.max(0, bonus);
+  entry.xp = DIFF[task.diff] + Math.max(0, Math.min((s - 1) * 2, 30));
   task.best = Math.max(task.best || 0, s);
 
   const { todo, done } = categorize();
@@ -239,7 +365,7 @@ function completeTask(task, originEl) {
   chime(done.length);
   burst(cx, cy, 26);
   floatText(`+${entry.xp} XP`, cx + 60, cy - 10);
-  if (s >= 3) setTimeout(() => toast(`🔥 ${s} in a row on ${task.title}`), 350);
+  if (s >= 3) setTimeout(() => toast(t('inARow', { n: s, t: task.title })), 350);
 
   setTimeout(() => {
     card.classList.add('leaving');
@@ -255,7 +381,6 @@ function completeTask(task, originEl) {
 function uncompleteTask(task) {
   const p = periodOf(task, todayKey());
   state.log = state.log.filter((e) => !(e.taskId === task.id && periodOf(task, e.date) === p));
-  // Undo today's perfect-day bonus if the day is no longer cleared
   const { todo } = categorize();
   if (todo.length > 0) state.log = state.log.filter((e) => !(e.type === 'perfect' && e.date === todayKey()));
   hapticLight();
@@ -267,6 +392,7 @@ function uncompleteTask(task) {
 // Rendering
 // =========================================================
 const checkSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const clockSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg>';
 let showLater = false;
 let activeTab = 'today';
 
@@ -276,59 +402,107 @@ function render(opts = {}) {
   if (activeTab === 'stats') renderStats();
 }
 
+// Animated countdown for the "time left" number
+const tl = { shown: null, from: 0, to: 0, start: 0, raf: 0 };
+function animateTimeLeft(target) {
+  if (tl.shown === null || reducedMotion()) { tl.shown = target; paintTimeLeft(); return; }
+  if (target === tl.to && tl.raf) return;
+  if (target === tl.shown && !tl.raf) { paintTimeLeft(); return; }
+  tl.from = tl.shown; tl.to = target; tl.start = performance.now();
+  cancelAnimationFrame(tl.raf);
+  const step = (now) => {
+    const p = Math.min(1, (now - tl.start) / 800);
+    const e = 1 - Math.pow(1 - p, 3);
+    tl.shown = Math.round(tl.from + (tl.to - tl.from) * e);
+    paintTimeLeft();
+    if (p < 1) tl.raf = requestAnimationFrame(step);
+    else tl.raf = 0;
+  };
+  tl.raf = requestAnimationFrame(step);
+}
+function paintTimeLeft() {
+  const el = document.getElementById('tl-num');
+  if (el && tl.shown !== null) el.textContent = fmtDur(tl.shown);
+}
+
 function renderHero() {
   const xp = totalXP();
-  const L = levelInfo(xp);
+  const lv = levelInfo(xp);
   const { todo, done } = categorize();
   const total = todo.length + done.length;
   const run = dayRun();
+  const tb = timeBudget();
+
   const pips = total > 0 && total <= 16
     ? `<div class="pips">${Array.from({ length: total }, (_, i) => `<span class="pip ${i < done.length ? 'on' : ''}"></span>`).join('')}</div>`
     : `<div class="pips"><span class="pip on" style="flex:${done.length || 0.0001}"></span><span class="pip" style="flex:${todo.length || 0.0001}"></span></div>`;
 
+  let timeBlock = '';
+  if (tb.total > 0) {
+    const C = 2 * Math.PI * 23;
+    const frac = tb.spent / tb.total;
+    const finished = tb.left === 0;
+    timeBlock = `
+      <div class="time-left ${finished ? 'finished' : ''}">
+        <span class="tl-icon">${finished ? checkSvg : clockSvg}</span>
+        <span class="tl-main">
+          ${finished
+            ? `<span class="tl-num">${fmtDur(tb.total)}</span><span class="tl-label">${t('timeAllDone')}</span>`
+            : `<span class="tl-num" id="tl-num">${fmtDur(tl.shown ?? tb.left)}</span><span class="tl-label">${t('timeLeft', { t: fmtDur(tb.total) })}</span>`}
+        </span>
+        <svg class="tl-bar" viewBox="0 0 54 54" aria-hidden="true">
+          <circle class="bg" cx="27" cy="27" r="23"/>
+          <circle class="fg" cx="27" cy="27" r="23" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/>
+        </svg>
+      </div>`;
+  }
+
   $('#hero').innerHTML = `
     <div class="lvl">
-      <span class="lvl-num">${L.lvl}</span>
+      <span class="lvl-num">${lv.lvl}</span>
       <div class="lvl-meta">
-        <div class="lvl-label">Level</div>
-        <div class="rank">${L.rank}</div>
+        <div class="lvl-label">${t('level')}</div>
+        <div class="rank">${lv.rank}</div>
       </div>
-      ${run > 0 ? `<div class="day-run" title="Days in a row with at least one habit done">🔥 ${run} ${run === 1 ? 'day' : 'days'}</div>` : ''}
+      ${run > 0 ? `<div class="day-run" title="${t('dayRunTitle')}">🔥 ${t('dayRun', { n: run })}</div>` : ''}
     </div>
-    <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${L.need}" aria-valuenow="${L.into}" aria-label="XP to next level">
-      <div class="xpfill" style="width:${Math.max(3, (L.into / L.need) * 100)}%"></div>
+    <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${lv.need}" aria-valuenow="${lv.into}" aria-label="${t('xpAria')}">
+      <div class="xpfill" style="width:${Math.max(3, (lv.into / lv.need) * 100)}%"></div>
     </div>
-    <div class="xp-text"><span><b>${L.into}</b> / ${L.need} XP</span><span>${L.need - L.into} to level ${L.lvl + 1}</span></div>
+    <div class="xp-text"><span><b>${lv.into}</b> / ${lv.need} XP</span><span>${t('toLevel', { n: lv.need - lv.into, l: lv.lvl + 1 })}</span></div>
     ${total > 0 ? `
     <div class="today-bar">
-      <div class="today-head"><span>Today</span><span><strong>${done.length}</strong> of ${total} done</span></div>
+      <div class="today-head"><span>${t('today')}</span><span>${t('doneOf', { d: done.length, t: total })}</span></div>
       ${pips}
     </div>` : ''}
+    ${timeBlock}
   `;
+  if (tb.total > 0 && tb.left > 0) animateTimeLeft(tb.left);
+  else { cancelAnimationFrame(tl.raf); tl.raf = 0; tl.shown = tb.total > 0 ? 0 : null; }
 }
 
-function taskHTML(t, kind, justDone) {
-  const s = streakOf(t);
+function taskHTML(task, kind, justDone) {
+  const s = streakOf(task);
   const meta = [];
-  if (kind === 'done') {
-    meta.push(`<span class="back">${nextDueLabel(t)}</span>`);
-  } else if (kind === 'later') {
-    meta.push(`<span>${nextLaterLabel(t)}</span>`);
-  } else {
-    const late = t.freq === 'once' && t.date && t.date < todayKey();
-    meta.push(`<span class="${late ? 'late' : ''}">${repeatLabel(t)}</span>`);
+  if (kind === 'done') meta.push(`<span class="back">${nextDueLabel(task)}</span>`);
+  else if (kind === 'later') meta.push(`<span>${nextLaterLabel(task)}</span>`);
+  else {
+    const late = task.freq === 'once' && task.date && task.date < todayKey();
+    meta.push(`<span class="${late ? 'late' : ''}">${repeatLabel(task)}</span>`);
   }
-  if (t.remind && t.time) meta.push(`<span>⏰ ${t.time}</span>`);
+  if (task.duration) meta.push(`<span>⏱ ${fmtDur(task.duration)}</span>`);
+  if (task.remind && task.time) meta.push(`<span>⏰ ${task.time}</span>`);
   if (s >= 2) meta.push(`<span class="streak">🔥 ${s}</span>`);
 
-  const doneEntry = kind === 'done' ? entriesFor(t).filter((e) => periodOf(t, e.date) === periodOf(t, todayKey())).pop() : null;
-  const tag = kind === 'done' ? `+${doneEntry ? doneEntry.xp : ''}` : kind === 'todo' ? `+${xpPreview(t)}` : '';
+  const doneEntry = kind === 'done' ? entriesFor(task).filter((e) => periodOf(task, e.date) === periodOf(task, todayKey())).pop() : null;
+  const tag = kind === 'done' ? `+${doneEntry ? doneEntry.xp : ''}` : kind === 'todo' ? `+${xpPreview(task)}` : '';
+  const title = esc(task.title);
 
   return `
-    <li class="task ${kind === 'todo' ? '' : kind} ${justDone === t.id ? 'just-done' : ''}" data-id="${t.id}">
-      <button class="check" data-act="${kind === 'done' ? 'undo' : 'done'}" aria-label="${kind === 'done' ? 'Mark not done' : 'Mark done'}: ${esc(t.title)}">${checkSvg}</button>
-      <button class="task-body" data-act="edit" aria-label="Edit ${esc(t.title)}">
-        <div class="task-title"><span class="emo">${t.emoji}</span>${esc(t.title)}</div>
+    <li class="task ${kind === 'todo' ? '' : kind} ${justDone === task.id ? 'just-done' : ''}" data-id="${task.id}">
+      <button class="check" data-act="${kind === 'done' ? 'undo' : 'done'}" aria-label="${kind === 'done' ? t('markUndone') : t('markDone')}: ${title}">${checkSvg}</button>
+      <button class="task-body" data-act="edit" aria-label="${t('edit')}: ${title}">
+        <div class="task-title"><span class="emo">${task.emoji}</span>${title}</div>
         <div class="task-meta">${meta.join('')}</div>
       </button>
       ${tag ? `<span class="xp-tag">${tag}</span>` : ''}
@@ -342,29 +516,28 @@ function renderLists({ justDone } = {}) {
   if (state.tasks.length === 0) {
     el.innerHTML = `
       <div class="empty">
-        <h3>Build your loop</h3>
-        <p>Add the things you want to do every day or every week. Check them off to earn XP and grow your streaks.</p>
-        <button class="btn primary" data-act="add">Add a habit</button>
-        <button class="btn" data-act="examples">Try examples</button>
+        <h3>${t('emptyTitle')}</h3>
+        <p>${t('emptyText')}</p>
+        <button class="btn primary" data-act="add">${t('addHabit')}</button>
+        <button class="btn" data-act="examples">${t('examples')}</button>
       </div>`;
     return;
   }
 
-  let html = '';
-  html += `<div class="group"><div class="group-head"><h3>To do</h3><span class="count">${todo.length}</span></div>`;
-  if (todo.length) html += `<ul class="tasks">${todo.map((t) => taskHTML(t, 'todo')).join('')}</ul>`;
-  else if (done.length) html += `<div class="cleared"><big>Day cleared</big>Everything's done. Your habits come back when they're due.</div>`;
-  else html += `<div class="cleared"><big>Nothing due today</big>Enjoy the break.</div>`;
+  let html = `<div class="group"><div class="group-head"><h3>${t('todo')}</h3><span class="count">${todo.length}</span></div>`;
+  if (todo.length) html += `<ul class="tasks">${todo.map((x) => taskHTML(x, 'todo')).join('')}</ul>`;
+  else if (done.length) html += `<div class="cleared"><big>${t('clearedTitle')}</big>${t('clearedText')}</div>`;
+  else html += `<div class="cleared"><big>${t('noneTitle')}</big>${t('noneText')}</div>`;
   html += `</div>`;
 
   if (done.length) {
-    html += `<div class="group"><div class="group-head"><h3>Done</h3><span class="count">${done.length}</span></div>
-      <ul class="tasks">${done.map((t) => taskHTML(t, 'done', justDone)).join('')}</ul></div>`;
+    html += `<div class="group"><div class="group-head"><h3>${t('done')}</h3><span class="count">${done.length}</span></div>
+      <ul class="tasks">${done.map((x) => taskHTML(x, 'done', justDone)).join('')}</ul></div>`;
   }
   if (later.length) {
-    html += `<div class="group"><div class="group-head"><h3>Not today</h3><span class="count">${later.length}</span>
-      <button class="toggle-later" data-act="toggle-later">${showLater ? 'Hide' : 'Show'}</button></div>
-      ${showLater ? `<ul class="tasks">${later.map((t) => taskHTML(t, 'later')).join('')}</ul>` : ''}</div>`;
+    html += `<div class="group"><div class="group-head"><h3>${t('later')}</h3><span class="count">${later.length}</span>
+      <button class="toggle-later" data-act="toggle-later">${showLater ? t('hide') : t('show')}</button></div>
+      ${showLater ? `<ul class="tasks">${later.map((x) => taskHTML(x, 'later')).join('')}</ul>` : ''}</div>`;
   }
   el.innerHTML = html;
 }
@@ -374,7 +547,6 @@ function renderStats() {
   const counts = {};
   for (const e of completions) counts[e.date] = (counts[e.date] || 0) + 1;
 
-  // 16-week heatmap, Monday rows first
   const WEEKS = 16;
   const start = addDays(parseKey(weekStartKey(todayKey())), -7 * (WEEKS - 1));
   const today = todayKey();
@@ -389,40 +561,65 @@ function renderStats() {
     }
   }
 
-  const habits = state.tasks.filter((t) => t.freq !== 'once').map((t) => {
-    const s = streakOf(t);
-    return { t, s, best: Math.max(t.best || 0, s), total: entriesFor(t).length };
+  const byId = Object.fromEntries(state.tasks.map((x) => [x.id, x]));
+  const minutes = completions.reduce((s, e) => s + ((byId[e.taskId] && byId[e.taskId].duration) || 0), 0);
+
+  const habits = state.tasks.filter((x) => x.freq !== 'once').map((x) => {
+    const s = streakOf(x);
+    return { x, s, best: Math.max(x.best || 0, s), total: entriesFor(x).length };
   }).sort((a, b) => b.s - a.s || b.total - a.total);
 
   $('#stats').innerHTML = `
-    <h2>Your progress</h2>
+    <h2>${t('progress')}</h2>
     <div class="stat-row">
-      <div class="stat"><b>${completions.length}</b><span>Check-offs</span></div>
-      <div class="stat"><b>${dayRun()}</b><span>Day run</span></div>
-      <div class="stat"><b>${bestDayRun()}</b><span>Best run</span></div>
+      <div class="stat"><b>${completions.length}</b><span>${t('checkoffs')}</span></div>
+      <div class="stat"><b>${dayRun()}</b><span>${t('runLbl')}</span></div>
+      <div class="stat"><b>${bestDayRun()}</b><span>${t('bestRun')}</span></div>
     </div>
+    ${minutes ? `<div class="stat" style="margin-top:10px"><b>${fmtDur(minutes)}</b><span>${t('timeSpent')}</span></div>` : ''}
 
-    <h3>Last 16 weeks</h3>
+    <h3>${t('last16')}</h3>
     <div class="heat-wrap"><div class="heat">${cells}</div></div>
-    <div class="heat-legend">Less <i style="background:var(--line)"></i><i data-l="1" style="background:color-mix(in srgb,var(--cobalt) 35%,var(--line))"></i><i style="background:color-mix(in srgb,var(--cobalt) 60%,var(--line))"></i><i style="background:var(--cobalt)"></i><i style="background:var(--sun)"></i> More</div>
+    <div class="heat-legend">${t('less')} <i style="background:var(--line)"></i><i style="background:color-mix(in srgb,var(--cobalt) 35%,var(--line))"></i><i style="background:color-mix(in srgb,var(--cobalt) 60%,var(--line))"></i><i style="background:var(--cobalt)"></i><i style="background:var(--sun)"></i> ${t('more')}</div>
 
     ${habits.length ? `
-    <h3>Streaks</h3>
+    <h3>${t('streaks')}</h3>
     <ul class="habit-list">
-      ${habits.map(({ t, s, best, total }) => `
-        <li><span class="emo">${t.emoji}</span><span class="name">${esc(t.title)}</span>
-        <span class="nums"><b>🔥 ${s}</b><br>best ${best}, total ${total}</span></li>`).join('')}
+      ${habits.map(({ x, s, best, total }) => `
+        <li><span class="emo">${x.emoji}</span><span class="name">${esc(x.title)}</span>
+        <span class="nums"><b>🔥 ${s}</b><br>${t('bestTotal', { b: best, t: total })}</span></li>`).join('')}
     </ul>` : ''}
 
-    <h3>Settings</h3>
+    <h3>${t('settings')}</h3>
     <div class="settings">
-      <label class="row"><span>Sounds<small>Chime when you check something off</small></span>
+      <label class="row"><span>${t('language')}</span>
+        <select id="set-lang">
+          <option value="pt-BR" ${lang() === 'pt-BR' ? 'selected' : ''}>Português (Brasil)</option>
+          <option value="en" ${lang() === 'en' ? 'selected' : ''}>English</option>
+        </select></label>
+      <label class="row"><span>${t('sounds')}<small>${t('soundsSub')}</small></span>
         <span class="switch"><input type="checkbox" id="set-sound" ${state.settings.sound ? 'checked' : ''}><span class="switch-ui"></span></span></label>
-      <button class="row" data-act="test-notif"><span>Send a test reminder<small>Arrives in 5 seconds</small></span>⏰</button>
-      <button class="row" data-act="backup"><span>Backup and restore<small>Keep a copy of your habits and history</small></span>💾</button>
+      <button class="row" data-act="test-notif"><span>${t('testReminder')}<small>${t('testSub')}</small></span>⏰</button>
+      <button class="row" data-act="backup"><span>${t('backupRow')}<small>${t('backupSub')}</small></span>💾</button>
     </div>
   `;
   $('#set-sound').addEventListener('change', (e) => { state.settings.sound = e.target.checked; save(); });
+  $('#set-lang').addEventListener('change', (e) => setLang(e.target.value));
+}
+
+// Static text in index.html
+function applyStatic() {
+  document.documentElement.lang = lang();
+  $$('[data-i18n]').forEach((el) => { el.innerHTML = t(el.dataset.i18n); });
+  $$('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+  $$('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+  buildFormOptions();
+}
+function setLang(code) {
+  state.settings.lang = code;
+  save();
+  applyStatic();
+  render();
 }
 
 // =========================================================
@@ -450,15 +647,15 @@ function audio() {
 function chime(step) {
   if (!audio()) return;
   const base = 523.25 * Math.pow(2, (Math.min(step, 10) * 2) / 12);
-  const t = actx.currentTime;
-  tone(base, t, 0.28);
-  tone(base * 1.5, t + 0.07, 0.35);
+  const now = actx.currentTime;
+  tone(base, now, 0.28);
+  tone(base * 1.5, now + 0.07, 0.35);
 }
 function fanfare() {
   if (!audio()) return;
-  const t = actx.currentTime;
-  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, t + i * 0.1, 0.4, 'square', 0.1));
-  tone(1046.5, t + 0.42, 0.8, 'triangle', 0.2);
+  const now = actx.currentTime;
+  [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, now + i * 0.1, 0.4, 'square', 0.1));
+  tone(1046.5, now + 0.42, 0.8, 'triangle', 0.2);
 }
 
 function hapticTap() {
@@ -532,27 +729,25 @@ function floatText(text, x, y) {
 
 let toastTimer;
 function toast(msg, win = false) {
-  const t = $('#toast');
-  t.textContent = msg;
-  t.classList.toggle('win', win);
-  t.classList.add('show');
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.toggle('win', win);
+  el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
 }
 
 function dayCleared() {
   hapticWin();
   fanfare();
-  const w = innerWidth;
-  burst(w * 0.2, innerHeight * 0.35, 30, 1.2);
-  burst(w * 0.8, innerHeight * 0.35, 30, 1.2);
-  toast('Day cleared! +25 XP bonus', true);
+  burst(innerWidth * 0.2, innerHeight * 0.35, 30, 1.2);
+  burst(innerWidth * 0.8, innerHeight * 0.35, 30, 1.2);
+  toast(t('dayClearedToast'), true);
 }
 
 function levelUp(lvl) {
-  const L = levelInfo(totalXP());
   $('#levelup-num').textContent = lvl;
-  $('#levelup-rank').textContent = L.rank;
+  $('#levelup-rank').textContent = levelInfo(totalXP()).rank;
   $('#levelup').hidden = false;
   hapticWin();
   fanfare();
@@ -567,33 +762,42 @@ let editing = null;
 const form = {
   title: $('#f-title'), emoji: $('#f-emoji'), freq: $('#f-freq'), days: $('#f-days'),
   date: $('#f-date'), remind: $('#f-remind'), time: $('#f-time'), remindDay: $('#f-remindday'), diff: $('#f-diff'),
+  durH: $('#f-dur-h'), durM: $('#f-dur-m'), durQuick: $('#f-dur-quick'),
 };
 let draft = null;
 
 form.emoji.innerHTML = EMOJIS.map((e) => `<button type="button" role="radio" data-v="${e}" aria-label="${e}">${e}</button>`).join('');
-form.days.innerHTML = WEEK_ORDER.map((d) => `<button type="button" role="checkbox" data-v="${d}" aria-label="${DAY_LONG[d]}">${DAY_SHORT[d][0]}</button>`).join('');
-form.remindDay.innerHTML = WEEK_ORDER.map((d) => `<option value="${d}">${DAY_LONG[d]}</option>`).join('');
+function buildFormOptions() {
+  const dl = L().daysLong, ds = L().daysShort;
+  form.days.innerHTML = WEEK_ORDER.map((d) => `<button type="button" role="checkbox" data-v="${d}" aria-label="${dl[d]}">${ds[d]}</button>`).join('');
+  const sel = form.remindDay.value;
+  form.remindDay.innerHTML = WEEK_ORDER.map((d) => `<option value="${d}">${cap1(dl[d])}</option>`).join('');
+  if (sel) form.remindDay.value = sel;
+  if (draft) syncSheet();
+}
 
-const FREQ_HINTS = {
-  daily: 'Comes back every morning.',
-  days: 'Only shows up on the days you pick.',
-  weekly: 'Do it once any day of the week. Resets every Monday.',
-  once: 'A regular to-do. Leaves the list after you finish it.',
-};
+const FREQ_HINT_KEYS = { daily: 'hintDaily', days: 'hintDays', weekly: 'hintWeekly', once: 'hintOnce' };
+const clampInt = (v, max) => Math.min(max, Math.max(0, parseInt(v, 10) || 0));
+const formMinutes = () => clampInt(form.durH.value, 23) * 60 + clampInt(form.durM.value, 59);
+function setFormMinutes(min) {
+  form.durH.value = min >= 60 ? Math.floor(min / 60) : '';
+  form.durM.value = min % 60 ? min % 60 : '';
+}
 
 function openSheet(task = null) {
   editing = task;
   draft = task ? { ...task, days: [...task.days] } : {
     title: '', emoji: '✅', freq: 'daily', days: [1, 3, 5], date: todayKey(),
-    remind: false, time: '09:00', remindDay: 1, diff: 2,
+    remind: false, time: '09:00', remindDay: 1, diff: 2, duration: 0,
   };
-  $('#sheet-title').textContent = task ? 'Edit habit' : 'New habit';
+  $('#sheet-title').textContent = task ? t('editHabit') : t('newHabit');
   $('#btn-delete').hidden = !task;
   form.title.value = draft.title;
   form.date.value = draft.date || todayKey();
   form.remind.checked = !!draft.remind;
   form.time.value = draft.time || '09:00';
   form.remindDay.value = String(draft.remindDay ?? 1);
+  setFormMinutes(draft.duration || 0);
   syncSheet();
   $('#sheet').hidden = false;
   if (!task) setTimeout(() => form.title.focus(), 250);
@@ -608,11 +812,13 @@ function syncSheet() {
   $$('button', form.freq).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === draft.freq));
   $$('button', form.days).forEach((b) => b.setAttribute('aria-checked', draft.days.includes(+b.dataset.v)));
   $$('button', form.diff).forEach((b) => b.setAttribute('aria-checked', +b.dataset.v === draft.diff));
+  const mins = formMinutes();
+  $$('button', form.durQuick).forEach((b) => b.setAttribute('aria-pressed', +b.dataset.m === mins));
   $('#row-days').hidden = draft.freq !== 'days';
   $('#row-date').hidden = draft.freq !== 'once';
   $('#row-time').hidden = !form.remind.checked;
   $('#row-remindday').hidden = draft.freq !== 'weekly';
-  $('#freq-hint').textContent = FREQ_HINTS[draft.freq];
+  $('#freq-hint').textContent = t(FREQ_HINT_KEYS[draft.freq]);
 }
 
 form.emoji.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { draft.emoji = b.dataset.v; syncSheet(); } });
@@ -624,19 +830,28 @@ form.days.addEventListener('click', (e) => {
   draft.days = draft.days.includes(d) ? draft.days.filter((x) => x !== d) : [...draft.days, d];
   syncSheet();
 });
+form.durQuick.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  const m = +b.dataset.m;
+  setFormMinutes(formMinutes() === m ? 0 : m); // tap again to clear
+  syncSheet();
+});
+form.durH.addEventListener('input', syncSheet);
+form.durM.addEventListener('input', syncSheet);
 form.remind.addEventListener('change', syncSheet);
 
 $('#task-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const title = form.title.value.trim();
-  if (!title) { form.title.focus(); toast('Give it a name first'); return; }
-  if (draft.freq === 'days' && draft.days.length === 0) { toast('Pick at least one day'); return; }
+  if (!title) { form.title.focus(); toast(t('needName')); return; }
+  if (draft.freq === 'days' && draft.days.length === 0) { toast(t('pickDay')); return; }
 
   const data = {
     title, emoji: draft.emoji, freq: draft.freq, days: draft.days.sort(),
     date: draft.freq === 'once' ? (form.date.value || todayKey()) : null,
     remind: form.remind.checked, time: form.time.value || '09:00',
     remindDay: +form.remindDay.value, diff: draft.diff,
+    duration: formMinutes(),
   };
   const wasEditing = !!editing;
   if (editing) Object.assign(editing, data);
@@ -645,20 +860,20 @@ $('#task-form').addEventListener('submit', async (e) => {
   closeSheets();
   save();
   render();
-  toast(wasEditing ? 'Habit saved' : 'Habit added');
+  toast(wasEditing ? t('habitSaved') : t('habitAdded'));
   if (data.remind) await ensureNotifPermission();
 });
 
 $('#btn-delete').addEventListener('click', () => {
   if (!editing) return;
-  if (!confirm(`Delete "${editing.title}"? Its history and XP will be removed too.`)) return;
+  if (!confirm(t('confirmDelete', { t: editing.title }))) return;
   const id = editing.id;
-  state.tasks = state.tasks.filter((t) => t.id !== id);
+  state.tasks = state.tasks.filter((x) => x.id !== id);
   state.log = state.log.filter((e) => e.taskId !== id);
   closeSheets();
   save();
   render();
-  toast('Habit deleted');
+  toast(t('habitDeleted'));
 });
 
 // =========================================================
@@ -670,18 +885,19 @@ function openBackup() {
 }
 $('#btn-copy').addEventListener('click', async () => {
   const ta = $('#backup-text');
-  try { await navigator.clipboard.writeText(ta.value); toast('Backup copied'); }
-  catch { ta.select(); document.execCommand('copy'); toast('Backup copied'); }
+  try { await navigator.clipboard.writeText(ta.value); }
+  catch { ta.select(); document.execCommand('copy'); }
+  toast(t('backupCopied'));
 });
 $('#btn-restore').addEventListener('click', () => {
   try {
     const data = JSON.parse($('#backup-text').value);
     if (!Array.isArray(data.tasks) || !Array.isArray(data.log)) throw new Error('shape');
-    if (!confirm('Replace everything in the app with this backup?')) return;
-    state = { settings: { sound: true }, ...data };
-    closeSheets(); save(); render();
-    toast('Backup restored', true);
-  } catch { toast("That text isn't a valid backup"); }
+    if (!confirm(t('confirmRestore'))) return;
+    state = { ...data, settings: { ...DEFAULT_SETTINGS, ...(data.settings || {}) } };
+    closeSheets(); save(); applyStatic(); render();
+    toast(t('restored'), true);
+  } catch { toast(t('badBackup')); }
 });
 
 // =========================================================
@@ -692,7 +908,7 @@ async function ensureNotifPermission() {
   try {
     let p = await LN.checkPermissions();
     if (p.display !== 'granted') p = await LN.requestPermissions();
-    if (p.display !== 'granted') { toast('Reminders are off. Turn on notifications for Loop in Android settings.'); return false; }
+    if (p.display !== 'granted') { toast(t('notifOff')); return false; }
     try {
       const ex = await LN.checkExactNotificationSetting();
       if (ex && ex.exact_alarm && ex.exact_alarm !== 'granted') await LN.changeExactNotificationSetting();
@@ -709,11 +925,11 @@ function remindsOn(task, date) {
   if (task.freq === 'once') return (task.date || '') === keyOf(date);
   return false;
 }
-const NUDGES = ['A quick win is waiting.', 'Check it off and grab your XP.', 'Tiny step, big streak.', 'You said you would. Let\u2019s go.'];
 function reminderBody(task) {
   const s = streakOf(task);
-  if (s >= 2) return `🔥 ${s} in a row. Keep it alive.`;
-  return NUDGES[(Math.random() * NUDGES.length) | 0];
+  const nudges = L().nudges;
+  const base = s >= 2 ? t('streakBody', { n: s }) : nudges[(Math.random() * nudges.length) | 0];
+  return task.duration ? `⏱ ${fmtDur(task.duration)}. ${base}` : base;
 }
 
 let notifTimer;
@@ -736,35 +952,35 @@ async function syncNotifications() {
     for (let i = 0; i < NOTIF_HORIZON_DAYS; i++) {
       const day = addDays(startOfToday(), i);
       const dk = keyOf(day);
-      for (const t of state.tasks) {
-        if (!t.remind || !t.time || !remindsOn(t, day) || isDone(t, dk)) continue;
-        const [h, m] = t.time.split(':').map(Number);
+      for (const task of state.tasks) {
+        if (!task.remind || !task.time || !remindsOn(task, day) || isDone(task, dk)) continue;
+        const [h, m] = task.time.split(':').map(Number);
         const at = new Date(day); at.setHours(h, m, 0, 0);
         if (at <= now) continue;
-        list.push({ at, t });
+        list.push({ at, task });
       }
     }
     list.sort((a, b) => a.at - b.at);
-    const notifications = list.slice(0, NOTIF_MAX).map(({ at, t }, i) => ({
+    const notifications = list.slice(0, NOTIF_MAX).map(({ at, task }, i) => ({
       id: i + 1,
-      title: `${t.emoji} ${t.title}`,
-      body: reminderBody(t),
+      title: `${task.emoji} ${task.title}`,
+      body: reminderBody(task),
       channelId: 'reminders',
       schedule: { at, allowWhileIdle: true },
-      extra: { taskId: t.id },
+      extra: { taskId: task.id },
     }));
     if (notifications.length) await LN.schedule({ notifications });
   } catch (e) { console.warn('notification sync failed', e); }
 }
 
 async function testNotification() {
-  if (!LN) { toast('Reminders work in the Android app, not the browser'); return; }
+  if (!LN) { toast(t('notifBrowser')); return; }
   if (!(await ensureNotifPermission())) return;
   await LN.schedule({ notifications: [{
-    id: TEST_NOTIF_ID, title: '✅ Loop', body: 'Reminders are working. Nice.',
+    id: TEST_NOTIF_ID, title: '✅ Loop', body: t('testBody'),
     channelId: 'reminders', schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true },
   }] });
-  toast('Test reminder in 5 seconds. You can lock your phone.');
+  toast(t('testSent'));
 }
 
 // =========================================================
@@ -773,11 +989,12 @@ async function testNotification() {
 function addExamples() {
   const base = { best: 0, date: null, remindDay: 0 };
   const now = Date.now();
+  const ex = L().ex;
   state.tasks.push(
-    { ...base, id: uid(), createdAt: now, title: 'Drink 3L of water', emoji: '💧', freq: 'daily', days: [], remind: true, time: '10:00', diff: 1 },
-    { ...base, id: uid(), createdAt: now + 1, title: 'Workout', emoji: '💪', freq: 'days', days: [1, 3, 5], remind: true, time: '18:00', diff: 3 },
-    { ...base, id: uid(), createdAt: now + 2, title: 'Read 10 pages', emoji: '📚', freq: 'daily', days: [], remind: true, time: '22:00', diff: 1 },
-    { ...base, id: uid(), createdAt: now + 3, title: 'Weekly review', emoji: '📈', freq: 'weekly', days: [], remind: true, time: '19:00', remindDay: 0, diff: 2 },
+    { ...base, id: uid(), createdAt: now, title: ex[0], emoji: '💧', freq: 'daily', days: [], remind: true, time: '10:00', diff: 1, duration: 0 },
+    { ...base, id: uid(), createdAt: now + 1, title: ex[1], emoji: '💪', freq: 'days', days: [1, 3, 5], remind: true, time: '18:00', diff: 3, duration: 60 },
+    { ...base, id: uid(), createdAt: now + 2, title: ex[2], emoji: '📚', freq: 'daily', days: [], remind: true, time: '22:00', diff: 1, duration: 20 },
+    { ...base, id: uid(), createdAt: now + 3, title: ex[3], emoji: '📈', freq: 'weekly', days: [], remind: true, time: '19:00', remindDay: 0, diff: 2, duration: 30 },
   );
   save();
   render();
@@ -806,7 +1023,7 @@ document.addEventListener('click', (e) => {
 
   const act = el.dataset.act;
   const li = el.closest('.task');
-  const task = li && state.tasks.find((t) => t.id === li.dataset.id);
+  const task = li && state.tasks.find((x) => x.id === li.dataset.id);
   switch (act) {
     case 'done': if (task) completeTask(task, el); break;
     case 'undo': if (task) uncompleteTask(task); break;
@@ -832,7 +1049,7 @@ if (AppPlugin) {
 // New day while the app is open, or coming back from background
 let lastDay = todayKey();
 function checkDayRollover() {
-  if (todayKey() !== lastDay) { lastDay = todayKey(); render(); scheduleNotifSync(); }
+  if (todayKey() !== lastDay) { lastDay = todayKey(); tl.shown = null; render(); scheduleNotifSync(); }
 }
 setInterval(checkDayRollover, 30000);
 document.addEventListener('visibilitychange', () => {
@@ -844,14 +1061,15 @@ document.addEventListener('visibilitychange', () => {
 // =========================================================
 (async function init() {
   await loadState();
+  applyStatic();
   if (LN) {
     try {
       await LN.createChannel({
-        id: 'reminders', name: 'Habit reminders', description: 'Reminders for your habits',
+        id: 'reminders', name: t('channelName'), description: t('channelDesc'),
         importance: 4, visibility: 1, vibration: true,
       });
     } catch (e) { console.warn(e); }
-    if (state.tasks.some((t) => t.remind)) ensureNotifPermission();
+    if (state.tasks.some((x) => x.remind)) ensureNotifPermission();
     else scheduleNotifSync();
   }
   render();
