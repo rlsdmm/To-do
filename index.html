@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#3346F0" />
+  <title>Loop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <!-- Today tab -->
+    <section id="view-today" class="view is-active">
+      <header class="hero" id="hero"></header>
+      <div id="lists"></div>
+    </section>
+
+    <!-- Stats tab -->
+    <section id="view-stats" class="view">
+      <div id="stats"></div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button class="tab is-active" data-tab="today">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg>
+      <span data-i18n="tabToday"></span>
+    </button>
+    <button class="fab" id="fab" data-i18n-aria="addHabit">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button class="tab" data-tab="stats">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>
+      <span data-i18n="tabStats"></span>
+    </button>
+  </nav>
+
+  <!-- Add / edit sheet -->
+  <div class="sheet-wrap" id="sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <form class="sheet" id="task-form" autocomplete="off" novalidate>
+      <div class="sheet-grip"></div>
+      <h2 id="sheet-title"></h2>
+
+      <label class="field">
+        <span class="field-label" data-i18n="name"></span>
+        <input id="f-title" type="text" maxlength="60" data-i18n-ph="namePh" required />
+      </label>
+
+      <div class="field">
+        <span class="field-label" data-i18n="icon"></span>
+        <div class="emoji-row" id="f-emoji" role="radiogroup"></div>
+      </div>
+
+      <div class="field">
+        <span class="field-label" data-i18n="repeats"></span>
+        <div class="seg" id="f-freq" role="radiogroup">
+          <button type="button" data-v="daily" data-i18n="freqDaily"></button>
+          <button type="button" data-v="days" data-i18n="freqDays"></button>
+          <button type="button" data-v="weekly" data-i18n="freqWeekly"></button>
+          <button type="button" data-v="once" data-i18n="freqOnce"></button>
+        </div>
+        <p class="hint" id="freq-hint"></p>
+      </div>
+
+      <div class="field" id="row-days">
+        <span class="field-label" data-i18n="onTheseDays"></span>
+        <div class="chips" id="f-days"></div>
+      </div>
+
+      <label class="field" id="row-date">
+        <span class="field-label" data-i18n="date"></span>
+        <input id="f-date" type="date" />
+      </label>
+
+      <div class="field">
+        <span class="field-label" data-i18n="duration"></span>
+        <div class="dur-row">
+          <label class="dur-box"><input id="f-dur-h" type="number" inputmode="numeric" min="0" max="23" placeholder="0" /><span>h</span></label>
+          <label class="dur-box"><input id="f-dur-m" type="number" inputmode="numeric" min="0" max="59" step="5" placeholder="0" /><span>min</span></label>
+        </div>
+        <div class="dur-quick" id="f-dur-quick">
+          <button type="button" data-m="5">5min</button>
+          <button type="button" data-m="15">15min</button>
+          <button type="button" data-m="30">30min</button>
+          <button type="button" data-m="60">1h</button>
+          <button type="button" data-m="90">1h 30min</button>
+        </div>
+        <p class="hint" data-i18n="durationHint"></p>
+      </div>
+
+      <div class="field">
+        <div class="toggle-row">
+          <span class="field-label" data-i18n="reminder"></span>
+          <label class="switch">
+            <input id="f-remind" type="checkbox" />
+            <span class="switch-ui"></span>
+          </label>
+        </div>
+        <div id="row-time" class="time-row">
+          <input id="f-time" type="time" value="09:00" />
+          <div id="row-remindday" class="remindday">
+            <span class="hint" data-i18n="onWord"></span>
+            <select id="f-remindday"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label" data-i18n="effort"></span>
+        <div class="seg" id="f-diff" role="radiogroup">
+          <button type="button" data-v="1" data-i18n="easy"></button>
+          <button type="button" data-v="2" data-i18n="medium"></button>
+          <button type="button" data-v="3" data-i18n="hard"></button>
+        </div>
+      </div>
+
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost danger" id="btn-delete" data-i18n="delete"></button>
+        <button type="submit" class="btn primary" id="btn-save" data-i18n="saveHabit"></button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Backup sheet -->
+  <div class="sheet-wrap" id="backup" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet">
+      <div class="sheet-grip"></div>
+      <h2 data-i18n="backupTitle"></h2>
+      <p class="hint" data-i18n="backupHint"></p>
+      <textarea id="backup-text" rows="8" spellcheck="false"></textarea>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost" id="btn-copy" data-i18n="copy"></button>
+        <button type="button" class="btn primary" id="btn-restore" data-i18n="restore"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level up -->
+  <div class="levelup" id="levelup" hidden>
+    <div class="levelup-card">
+      <p class="levelup-kicker" data-i18n="levelUp"></p>
+      <div class="levelup-num" id="levelup-num">2</div>
+      <p class="levelup-rank" id="levelup-rank"></p>
+      <button class="btn primary" id="levelup-ok" data-i18n="keepGoing"></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
