@@ -1,6 +1,6 @@
 # Loop
 
-A habit to-do list for Android. Check things off to earn XP, level up, and build streaks. Daily and weekly habits come back on their own after you complete them.
+A habit to-do list for Android. Check things off to earn XP, level up, and build streaks. Daily and interval habits come back on their own after you complete them.
 
 Everything runs on the phone: no server, no account. Reminders are scheduled locally, so they work offline.
 
@@ -8,10 +8,10 @@ Everything runs on the phone: no server, no account. Reminders are scheduled loc
 
 - **Daily** habits come back every day.
 - **Some days** habits only show up on the days you pick (e.g. Mon, Wed, Fri).
-- **Weekly** habits can be done any day of the week and reset every Monday.
+- **Interval** habits repeat every N days (you pick N: 7, 40, 90...). After you finish one, it comes back N days later.
 - **Once** is a normal to-do that leaves the list the day after you finish it.
 
-Checking something off moves it to **Done** with a "Back tomorrow" / "Back Monday" label. It returns to **To do** automatically when it's due again.
+Checking something off moves it to **Done** with a "Back tomorrow" / "Back in 40 days" label. It returns to **To do** automatically when it's due again.
 
 XP per check-off: Easy 10, Medium 20, Hard 35, plus a streak bonus (+2 per streak step, up to +30). Finishing everything due in a day gives a +25 "Day cleared" bonus. Unchecking takes the XP back.
 

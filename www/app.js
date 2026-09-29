@@ -41,10 +41,10 @@ const I18N = {
     todo: 'A fazer', done: 'Feitas', later: 'Hoje não', show: 'Mostrar', hide: 'Ocultar',
     clearedTitle: 'Dia concluído', clearedText: 'Tudo feito. Seus hábitos voltam quando for a hora.',
     noneTitle: 'Nada para hoje', noneText: 'Aproveite a folga.',
-    emptyTitle: 'Monte sua rotina', emptyText: 'Adicione o que você quer fazer todo dia ou toda semana. Marque como feito para ganhar XP e aumentar suas sequências.',
+    emptyTitle: 'Monte sua rotina', emptyText: 'Adicione o que você quer fazer todo dia ou de tempos em tempos. Marque como feito para ganhar XP e aumentar suas sequências.',
     examples: 'Ver exemplos',
-    backTomorrow: 'Volta amanhã', backMonday: 'Volta segunda', backDay: 'Volta {day}', finished: 'Concluída',
-    everyDay: 'Todo dia', weeklyLast: 'Semanal, último dia', weeklyLeft: 'Semanal, faltam {n} dias',
+    backTomorrow: 'Volta amanhã', backDay: 'Volta {day}', finished: 'Concluída',
+    everyDay: 'Todo dia', everyN: 'A cada {n} dias', backIn: 'Volta em {n} dias',
     oneTime: 'Uma vez', dueOn: 'Prazo {d}', todayLbl: 'Hoje', onDate: 'Em {d}', tomorrow: 'Amanhã',
     markDone: 'Marcar como feita', markUndone: 'Desmarcar', edit: 'Editar',
     inARow: '🔥 {n} seguidas em {t}', dayClearedToast: 'Dia concluído! +25 XP de bônus',
@@ -52,13 +52,14 @@ const I18N = {
     needName: 'Dê um nome primeiro', pickDay: 'Escolha pelo menos um dia',
     confirmDelete: 'Excluir "{t}"? O histórico e o XP dele também serão apagados.',
     newHabit: 'Novo hábito', editHabit: 'Editar hábito', name: 'Nome', namePh: 'ex.: Treino, Beber água, Ler',
-    icon: 'Ícone', repeats: 'Repete', freqDaily: 'Diário', freqDays: 'Alguns dias', freqWeekly: 'Semanal', freqOnce: 'Uma vez',
+    icon: 'Ícone', repeats: 'Repete', freqDaily: 'Diário', freqDays: 'Alguns dias', freqInterval: 'Intervalo', freqOnce: 'Uma vez',
     hintDaily: 'Volta toda manhã.', hintDays: 'Só aparece nos dias que você escolher.',
-    hintWeekly: 'Faça uma vez em qualquer dia da semana. Reinicia toda segunda.',
+    hintInterval: 'Depois que você concluir, volta daqui a {n} dias.',
+    everyLabel: 'A cada', daysWord: 'dias', nextTime: 'Próxima vez', pickInterval: 'Escolha um intervalo de pelo menos 2 dias',
     hintOnce: 'Uma tarefa comum. Sai da lista depois que você concluir.',
     onTheseDays: 'Nestes dias', date: 'Data', duration: 'Duração',
     durationHint: 'Opcional. Entra na soma do tempo do dia.',
-    reminder: 'Lembrete', onWord: 'na', effort: 'Esforço',
+    reminder: 'Lembrete', effort: 'Esforço',
     easy: 'Fácil <b>+10</b>', medium: 'Médio <b>+20</b>', hard: 'Difícil <b>+35</b>',
     delete: 'Excluir', saveHabit: 'Salvar hábito',
     backupTitle: 'Backup', backupHint: 'Guarde este texto em um lugar seguro. Para restaurar, cole um backup aqui e toque em Restaurar.',
@@ -74,7 +75,7 @@ const I18N = {
     notifBrowser: 'Lembretes funcionam no app Android, não no navegador',
     testSent: 'Lembrete de teste em 5 segundos. Pode bloquear o celular.', testBody: 'Os lembretes estão funcionando.',
     streakBody: '🔥 {n} seguidas. Não quebre a sequência.', channelName: 'Lembretes de hábitos', channelDesc: 'Lembretes dos seus hábitos',
-    ex: ['Beber 3L de água', 'Treino', 'Ler 10 páginas', 'Revisão semanal'],
+    ex: ['Beber 3L de água', 'Treino', 'Ler 10 páginas', 'Trocar a roupa de cama'],
   },
   en: {
     daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -89,10 +90,10 @@ const I18N = {
     todo: 'To do', done: 'Done', later: 'Not today', show: 'Show', hide: 'Hide',
     clearedTitle: 'Day cleared', clearedText: "Everything's done. Your habits come back when they're due.",
     noneTitle: 'Nothing due today', noneText: 'Enjoy the break.',
-    emptyTitle: 'Build your loop', emptyText: 'Add the things you want to do every day or every week. Check them off to earn XP and grow your streaks.',
+    emptyTitle: 'Build your loop', emptyText: 'Add the things you want to do every day or every so often. Check them off to earn XP and grow your streaks.',
     examples: 'Try examples',
-    backTomorrow: 'Back tomorrow', backMonday: 'Back Monday', backDay: 'Back {day}', finished: 'Finished',
-    everyDay: 'Every day', weeklyLast: 'Weekly, last day', weeklyLeft: 'Weekly, {n} days left',
+    backTomorrow: 'Back tomorrow', backDay: 'Back {day}', finished: 'Finished',
+    everyDay: 'Every day', everyN: 'Every {n} days', backIn: 'Back in {n} days',
     oneTime: 'One time', dueOn: 'Due {d}', todayLbl: 'Today', onDate: 'On {d}', tomorrow: 'Tomorrow',
     markDone: 'Mark done', markUndone: 'Mark not done', edit: 'Edit',
     inARow: '🔥 {n} in a row on {t}', dayClearedToast: 'Day cleared! +25 XP bonus',
@@ -100,13 +101,14 @@ const I18N = {
     needName: 'Give it a name first', pickDay: 'Pick at least one day',
     confirmDelete: 'Delete "{t}"? Its history and XP will be removed too.',
     newHabit: 'New habit', editHabit: 'Edit habit', name: 'Name', namePh: 'e.g. Workout, Drink water, Read',
-    icon: 'Icon', repeats: 'Repeats', freqDaily: 'Daily', freqDays: 'Some days', freqWeekly: 'Weekly', freqOnce: 'Once',
+    icon: 'Icon', repeats: 'Repeats', freqDaily: 'Daily', freqDays: 'Some days', freqInterval: 'Interval', freqOnce: 'Once',
     hintDaily: 'Comes back every morning.', hintDays: 'Only shows up on the days you pick.',
-    hintWeekly: 'Do it once any day of the week. Resets every Monday.',
+    hintInterval: 'After you finish it, it comes back in {n} days.',
+    everyLabel: 'Every', daysWord: 'days', nextTime: 'Next time', pickInterval: 'Pick an interval of at least 2 days',
     hintOnce: 'A regular to-do. Leaves the list after you finish it.',
     onTheseDays: 'On these days', date: 'Date', duration: 'Time needed',
     durationHint: "Optional. Counts toward today's total time.",
-    reminder: 'Reminder', onWord: 'on', effort: 'Effort',
+    reminder: 'Reminder', effort: 'Effort',
     easy: 'Easy <b>+10</b>', medium: 'Medium <b>+20</b>', hard: 'Hard <b>+35</b>',
     delete: 'Delete', saveHabit: 'Save habit',
     backupTitle: 'Backup', backupHint: 'Copy this text somewhere safe. To restore, paste a backup here and tap Restore.',
@@ -122,7 +124,7 @@ const I18N = {
     notifBrowser: 'Reminders work in the Android app, not the browser',
     testSent: 'Test reminder in 5 seconds. You can lock your phone.', testBody: 'Reminders are working. Nice.',
     streakBody: '🔥 {n} in a row. Keep it alive.', channelName: 'Habit reminders', channelDesc: 'Reminders for your habits',
-    ex: ['Drink 3L of water', 'Workout', 'Read 10 pages', 'Weekly review'],
+    ex: ['Drink 3L of water', 'Workout', 'Read 10 pages', 'Change the bed sheets'],
   },
 };
 const lang = () => (state.settings && I18N[state.settings.lang] ? state.settings.lang : 'pt-BR');
@@ -151,6 +153,7 @@ const parseKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new
 const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
 const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
 const todayKey = () => keyOf(new Date());
+const daysBetween = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 86400000);
 const weekStartKey = (k) => { const d = parseKey(k); return keyOf(addDays(d, -((d.getDay() + 6) % 7))); };
 const fmtDate = (k) => parseKey(k).toLocaleDateString(lang(), { day: 'numeric', month: 'short' });
 
@@ -180,6 +183,18 @@ async function loadState() {
       state.settings = { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) };
     } catch (e) { console.warn('bad saved data', e); }
   }
+  migrate();
+}
+
+// Old "weekly" habits become "every 7 days", due 7 days after the last check-off.
+function migrate() {
+  for (const task of state.tasks) {
+    if (task.freq !== 'weekly') continue;
+    const last = entriesFor(task).map((e) => e.date).sort().pop();
+    task.freq = 'interval';
+    task.every = 7;
+    task.date = last ? keyOf(addDays(parseKey(last), 7)) : todayKey();
+  }
 }
 
 let saveTimer = null;
@@ -198,9 +213,9 @@ function save() {
 // =========================================================
 // Habit logic
 // =========================================================
-// A "period" is what one check-off covers: a day, a week, or forever (one-time).
+// A "period" is what one check-off covers: a day, or forever (one-time).
+// Interval habits keep their next due day in task.date; it moves forward on each check-off.
 function periodOf(task, dateKey) {
-  if (task.freq === 'weekly') return weekStartKey(dateKey);
   if (task.freq === 'once') return 'once';
   return dateKey;
 }
@@ -215,7 +230,7 @@ function isScheduledOn(task, date) {
 }
 function isDueToday(task) {
   if (task.freq === 'days') return task.days.includes(new Date().getDay());
-  if (task.freq === 'once') return !task.date || task.date <= todayKey();
+  if (task.freq === 'once' || task.freq === 'interval') return !task.date || task.date <= todayKey();
   return true;
 }
 
@@ -223,10 +238,13 @@ function streakOf(task) {
   if (task.freq === 'once') return 0;
   const done = new Set(entriesFor(task).map((e) => periodOf(task, e.date)));
   let n = 0;
-  if (task.freq === 'weekly') {
-    let wk = parseKey(weekStartKey(todayKey()));
-    if (!done.has(keyOf(wk))) wk = addDays(wk, -7); // this week still open
-    while (done.has(keyOf(wk))) { n++; wk = addDays(wk, -7); }
+  if (task.freq === 'interval') {
+    if (task.date && task.date < todayKey()) return 0; // overdue
+    const dates = [...done].sort().reverse();
+    for (let i = 0; i < dates.length; i++) {
+      if (i > 0 && daysBetween(dates[i], dates[i - 1]) > task.every) break;
+      n++;
+    }
     return n;
   }
   let d = startOfToday();
@@ -275,6 +293,8 @@ function categorize() {
         const e = entriesFor(task)[0];
         if (e && e.date === today) done.push(task); // finished one-timers leave after today
       } else done.push(task);
+    } else if (task.freq === 'interval' && task.date > today) {
+      later.push(task); // done earlier in its cycle, waiting to come back
     } else if (isDueToday(task)) todo.push(task);
     else later.push(task);
   }
@@ -296,7 +316,7 @@ function timeBudget() {
 
 function nextDueLabel(task) {
   if (task.freq === 'daily') return t('backTomorrow');
-  if (task.freq === 'weekly') return t('backMonday');
+  if (task.freq === 'interval') return t('backIn', { n: daysBetween(todayKey(), task.date) });
   if (task.freq === 'once') return t('finished');
   const today = startOfToday();
   for (let i = 1; i <= 7; i++) {
@@ -307,9 +327,9 @@ function nextDueLabel(task) {
 }
 function repeatLabel(task) {
   if (task.freq === 'daily') return t('everyDay');
-  if (task.freq === 'weekly') {
-    const left = 7 - ((new Date().getDay() + 6) % 7);
-    return left === 1 ? t('weeklyLast') : t('weeklyLeft', { n: left });
+  if (task.freq === 'interval') {
+    if (task.date < todayKey()) return `${t('everyN', { n: task.every })} · ${t('dueOn', { d: fmtDate(task.date) })}`;
+    return t('everyN', { n: task.every });
   }
   if (task.freq === 'once') {
     if (!task.date) return t('oneTime');
@@ -321,6 +341,10 @@ function repeatLabel(task) {
 }
 function nextLaterLabel(task) {
   if (task.freq === 'once' && task.date) return t('onDate', { d: fmtDate(task.date) });
+  if (task.freq === 'interval') {
+    const n = daysBetween(todayKey(), task.date);
+    return n === 1 ? t('tomorrow') : `${t('onDate', { d: fmtDate(task.date) })} · ${t('backIn', { n })}`;
+  }
   const today = startOfToday();
   for (let i = 1; i <= 7; i++) {
     const d = addDays(today, i);
@@ -341,6 +365,10 @@ function completeTask(task, originEl) {
   const beforeLvl = levelInfo(totalXP()).lvl;
   const entry = { id: uid(), taskId: task.id, date: today, ts: Date.now(), xp: 0 };
   state.log.push(entry);
+  if (task.freq === 'interval') {
+    entry.prevDate = task.date;
+    task.date = keyOf(addDays(startOfToday(), task.every));
+  }
   const s = streakOf(task);
   entry.xp = DIFF[task.diff] + Math.max(0, Math.min((s - 1) * 2, 30));
   task.best = Math.max(task.best || 0, s);
@@ -380,7 +408,9 @@ function completeTask(task, originEl) {
 
 function uncompleteTask(task) {
   const p = periodOf(task, todayKey());
-  state.log = state.log.filter((e) => !(e.taskId === task.id && periodOf(task, e.date) === p));
+  const undone = state.log.filter((e) => e.taskId === task.id && periodOf(task, e.date) === p);
+  if (task.freq === 'interval' && undone.length) task.date = undone[0].prevDate || todayKey();
+  state.log = state.log.filter((e) => !undone.includes(e));
   const { todo } = categorize();
   if (todo.length > 0) state.log = state.log.filter((e) => !(e.type === 'perfect' && e.date === todayKey()));
   hapticLight();
@@ -487,7 +517,7 @@ function taskHTML(task, kind, justDone) {
   if (kind === 'done') meta.push(`<span class="back">${nextDueLabel(task)}</span>`);
   else if (kind === 'later') meta.push(`<span>${nextLaterLabel(task)}</span>`);
   else {
-    const late = task.freq === 'once' && task.date && task.date < todayKey();
+    const late = (task.freq === 'once' || task.freq === 'interval') && task.date && task.date < todayKey();
     meta.push(`<span class="${late ? 'late' : ''}">${repeatLabel(task)}</span>`);
   }
   if (task.duration) meta.push(`<span>⏱ ${fmtDur(task.duration)}</span>`);
@@ -761,7 +791,8 @@ function levelUp(lvl) {
 let editing = null;
 const form = {
   title: $('#f-title'), emoji: $('#f-emoji'), freq: $('#f-freq'), days: $('#f-days'),
-  date: $('#f-date'), remind: $('#f-remind'), time: $('#f-time'), remindDay: $('#f-remindday'), diff: $('#f-diff'),
+  date: $('#f-date'), remind: $('#f-remind'), time: $('#f-time'), diff: $('#f-diff'),
+  every: $('#f-every'), everyQuick: $('#f-every-quick'),
   durH: $('#f-dur-h'), durM: $('#f-dur-m'), durQuick: $('#f-dur-quick'),
 };
 let draft = null;
@@ -770,14 +801,12 @@ form.emoji.innerHTML = EMOJIS.map((e) => `<button type="button" role="radio" dat
 function buildFormOptions() {
   const dl = L().daysLong, ds = L().daysShort;
   form.days.innerHTML = WEEK_ORDER.map((d) => `<button type="button" role="checkbox" data-v="${d}" aria-label="${dl[d]}">${ds[d]}</button>`).join('');
-  const sel = form.remindDay.value;
-  form.remindDay.innerHTML = WEEK_ORDER.map((d) => `<option value="${d}">${cap1(dl[d])}</option>`).join('');
-  if (sel) form.remindDay.value = sel;
   if (draft) syncSheet();
 }
 
-const FREQ_HINT_KEYS = { daily: 'hintDaily', days: 'hintDays', weekly: 'hintWeekly', once: 'hintOnce' };
+const FREQ_HINT_KEYS = { daily: 'hintDaily', days: 'hintDays', interval: 'hintInterval', once: 'hintOnce' };
 const clampInt = (v, max) => Math.min(max, Math.max(0, parseInt(v, 10) || 0));
+const formEvery = () => Math.min(365, parseInt(form.every.value, 10) || 0);
 const formMinutes = () => clampInt(form.durH.value, 23) * 60 + clampInt(form.durM.value, 59);
 function setFormMinutes(min) {
   form.durH.value = min >= 60 ? Math.floor(min / 60) : '';
@@ -787,8 +816,8 @@ function setFormMinutes(min) {
 function openSheet(task = null) {
   editing = task;
   draft = task ? { ...task, days: [...task.days] } : {
-    title: '', emoji: '✅', freq: 'daily', days: [1, 3, 5], date: todayKey(),
-    remind: false, time: '09:00', remindDay: 1, diff: 2, duration: 0,
+    title: '', emoji: '✅', freq: 'daily', days: [1, 3, 5], date: todayKey(), every: 30,
+    remind: false, time: '09:00', diff: 2, duration: 0,
   };
   $('#sheet-title').textContent = task ? t('editHabit') : t('newHabit');
   $('#btn-delete').hidden = !task;
@@ -796,7 +825,7 @@ function openSheet(task = null) {
   form.date.value = draft.date || todayKey();
   form.remind.checked = !!draft.remind;
   form.time.value = draft.time || '09:00';
-  form.remindDay.value = String(draft.remindDay ?? 1);
+  form.every.value = draft.every || 30;
   setFormMinutes(draft.duration || 0);
   syncSheet();
   $('#sheet').hidden = false;
@@ -815,10 +844,13 @@ function syncSheet() {
   const mins = formMinutes();
   $$('button', form.durQuick).forEach((b) => b.setAttribute('aria-pressed', +b.dataset.m === mins));
   $('#row-days').hidden = draft.freq !== 'days';
-  $('#row-date').hidden = draft.freq !== 'once';
+  $('#row-date').hidden = draft.freq !== 'once' && draft.freq !== 'interval';
+  $('#date-label').textContent = draft.freq === 'interval' ? t('nextTime') : t('date');
+  $('#row-every').hidden = draft.freq !== 'interval';
+  const every = formEvery();
+  $$('button', form.everyQuick).forEach((b) => b.setAttribute('aria-pressed', +b.dataset.d === every));
   $('#row-time').hidden = !form.remind.checked;
-  $('#row-remindday').hidden = draft.freq !== 'weekly';
-  $('#freq-hint').textContent = t(FREQ_HINT_KEYS[draft.freq]);
+  $('#freq-hint').textContent = t(FREQ_HINT_KEYS[draft.freq], { n: every || '…' });
 }
 
 form.emoji.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { draft.emoji = b.dataset.v; syncSheet(); } });
@@ -836,6 +868,12 @@ form.durQuick.addEventListener('click', (e) => {
   setFormMinutes(formMinutes() === m ? 0 : m); // tap again to clear
   syncSheet();
 });
+form.everyQuick.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  form.every.value = b.dataset.d;
+  syncSheet();
+});
+form.every.addEventListener('input', syncSheet);
 form.durH.addEventListener('input', syncSheet);
 form.durM.addEventListener('input', syncSheet);
 form.remind.addEventListener('change', syncSheet);
@@ -845,12 +883,22 @@ $('#task-form').addEventListener('submit', async (e) => {
   const title = form.title.value.trim();
   if (!title) { form.title.focus(); toast(t('needName')); return; }
   if (draft.freq === 'days' && draft.days.length === 0) { toast(t('pickDay')); return; }
+  const every = formEvery();
+  if (draft.freq === 'interval' && every < 2) { form.every.focus(); toast(t('pickInterval')); return; }
+
+  let date = null;
+  if (draft.freq === 'once' || draft.freq === 'interval') date = form.date.value || todayKey();
+  // Changed the interval but not the date: count again from the last check-off.
+  if (draft.freq === 'interval' && editing && editing.freq === 'interval' && every !== editing.every && date === editing.date) {
+    const last = entriesFor(editing).map((e) => e.date).sort().pop();
+    if (last) date = keyOf(addDays(parseKey(last), every));
+  }
 
   const data = {
     title, emoji: draft.emoji, freq: draft.freq, days: draft.days.sort(),
-    date: draft.freq === 'once' ? (form.date.value || todayKey()) : null,
+    date, every: draft.freq === 'interval' ? every : null,
     remind: form.remind.checked, time: form.time.value || '09:00',
-    remindDay: +form.remindDay.value, diff: draft.diff,
+    diff: draft.diff,
     duration: formMinutes(),
   };
   const wasEditing = !!editing;
@@ -895,6 +943,7 @@ $('#btn-restore').addEventListener('click', () => {
     if (!Array.isArray(data.tasks) || !Array.isArray(data.log)) throw new Error('shape');
     if (!confirm(t('confirmRestore'))) return;
     state = { ...data, settings: { ...DEFAULT_SETTINGS, ...(data.settings || {}) } };
+    migrate();
     closeSheets(); save(); applyStatic(); render();
     toast(t('restored'), true);
   } catch { toast(t('badBackup')); }
@@ -921,8 +970,8 @@ async function ensureNotifPermission() {
 function remindsOn(task, date) {
   if (task.freq === 'daily') return true;
   if (task.freq === 'days') return task.days.includes(date.getDay());
-  if (task.freq === 'weekly') return date.getDay() === task.remindDay;
   if (task.freq === 'once') return (task.date || '') === keyOf(date);
+  if (task.freq === 'interval') return keyOf(date) >= (task.date || ''); // due day, then daily while overdue
   return false;
 }
 function reminderBody(task) {
@@ -987,14 +1036,14 @@ async function testNotification() {
 // Examples
 // =========================================================
 function addExamples() {
-  const base = { best: 0, date: null, remindDay: 0 };
+  const base = { best: 0, date: null, every: null };
   const now = Date.now();
   const ex = L().ex;
   state.tasks.push(
     { ...base, id: uid(), createdAt: now, title: ex[0], emoji: '💧', freq: 'daily', days: [], remind: true, time: '10:00', diff: 1, duration: 0 },
     { ...base, id: uid(), createdAt: now + 1, title: ex[1], emoji: '💪', freq: 'days', days: [1, 3, 5], remind: true, time: '18:00', diff: 3, duration: 60 },
     { ...base, id: uid(), createdAt: now + 2, title: ex[2], emoji: '📚', freq: 'daily', days: [], remind: true, time: '22:00', diff: 1, duration: 20 },
-    { ...base, id: uid(), createdAt: now + 3, title: ex[3], emoji: '📈', freq: 'weekly', days: [], remind: true, time: '19:00', remindDay: 0, diff: 2, duration: 30 },
+    { ...base, id: uid(), createdAt: now + 3, title: ex[3], emoji: '🛏️', freq: 'interval', every: 15, date: todayKey(), days: [], remind: true, time: '19:00', diff: 2, duration: 20 },
   );
   save();
   render();

@@ -57,7 +57,7 @@
         <div class="seg" id="f-freq" role="radiogroup">
           <button type="button" data-v="daily" data-i18n="freqDaily"></button>
           <button type="button" data-v="days" data-i18n="freqDays"></button>
-          <button type="button" data-v="weekly" data-i18n="freqWeekly"></button>
+          <button type="button" data-v="interval" data-i18n="freqInterval"></button>
           <button type="button" data-v="once" data-i18n="freqOnce"></button>
         </div>
         <p class="hint" id="freq-hint"></p>
@@ -68,8 +68,23 @@
         <div class="chips" id="f-days"></div>
       </div>
 
+      <div class="field" id="row-every">
+        <span class="field-label" data-i18n="everyLabel"></span>
+        <div class="dur-row">
+          <label class="dur-box"><input id="f-every" type="number" inputmode="numeric" min="2" max="365" placeholder="30" /><span data-i18n="daysWord"></span></label>
+        </div>
+        <div class="dur-quick" id="f-every-quick">
+          <button type="button" data-d="7">7</button>
+          <button type="button" data-d="15">15</button>
+          <button type="button" data-d="30">30</button>
+          <button type="button" data-d="40">40</button>
+          <button type="button" data-d="60">60</button>
+          <button type="button" data-d="90">90</button>
+        </div>
+      </div>
+
       <label class="field" id="row-date">
-        <span class="field-label" data-i18n="date"></span>
+        <span class="field-label" id="date-label"></span>
         <input id="f-date" type="date" />
       </label>
 
@@ -99,10 +114,6 @@
         </div>
         <div id="row-time" class="time-row">
           <input id="f-time" type="time" value="09:00" />
-          <div id="row-remindday" class="remindday">
-            <span class="hint" data-i18n="onWord"></span>
-            <select id="f-remindday"></select>
-          </div>
         </div>
       </div>
 
