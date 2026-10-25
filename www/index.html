@@ -53,6 +53,11 @@
       </div>
 
       <div class="field">
+        <span class="field-label" data-i18n="category"></span>
+        <div class="cat-picker" id="f-cat" role="radiogroup"></div>
+      </div>
+
+      <div class="field">
         <span class="field-label" data-i18n="repeats"></span>
         <div class="seg" id="f-freq" role="radiogroup">
           <button type="button" data-v="daily" data-i18n="freqDaily"></button>
@@ -129,6 +134,32 @@
       <div class="sheet-actions">
         <button type="button" class="btn ghost danger" id="btn-delete" data-i18n="delete"></button>
         <button type="submit" class="btn primary" id="btn-save" data-i18n="saveHabit"></button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Category sheet -->
+  <div class="sheet-wrap cat-sheet-wrap" id="cat-sheet" hidden>
+    <div class="sheet-backdrop" data-close-cat></div>
+    <form class="sheet" id="cat-form" autocomplete="off" novalidate>
+      <div class="sheet-grip"></div>
+      <h2 id="cat-title"></h2>
+      <div id="cat-preview" class="cat-preview"></div>
+      <label class="field">
+        <span class="field-label" data-i18n="catName"></span>
+        <input id="c-name" type="text" maxlength="24" data-i18n-ph="catNamePh" required />
+      </label>
+      <div class="field">
+        <span class="field-label" data-i18n="icon"></span>
+        <div class="emoji-row" id="c-emoji" role="radiogroup"></div>
+      </div>
+      <div class="field">
+        <span class="field-label" data-i18n="catColor"></span>
+        <div class="color-row" id="c-color" role="radiogroup"></div>
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="btn ghost danger" id="btn-cat-delete" data-i18n="delete"></button>
+        <button type="submit" class="btn primary" data-i18n="saveCat"></button>
       </div>
     </form>
   </div>
