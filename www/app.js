@@ -76,6 +76,15 @@ const I18N = {
     testSent: 'Lembrete de teste em 5 segundos. Pode bloquear o celular.', testBody: 'Os lembretes estão funcionando.',
     streakBody: '🔥 {n} seguidas. Não quebre a sequência.', channelName: 'Lembretes de hábitos', channelDesc: 'Lembretes dos seus hábitos',
     ex: ['Beber 3L de água', 'Treino', 'Ler 10 páginas', 'Trocar a roupa de cama'],
+    defaultCats: [['Casa', '🏠'], ['Trabalho', '💼'], ['Saúde', '💪'], ['Estudos', '📚']],
+    category: 'Categoria', allCats: 'Todas', noCat: 'Sem categoria', newCat: 'Nova categoria', editCat: 'Editar categoria',
+    addCat: '+ Nova', catName: 'Nome', catNamePh: 'ex.: Casa, Trabalho, Piscinas', catColor: 'Cor',
+    saveCat: 'Salvar categoria', catSaved: 'Categoria salva', catDeleted: 'Categoria excluída',
+    catExists: 'Já existe uma categoria com esse nome',
+    confirmDeleteCat: 'Excluir a categoria "{t}"? Os hábitos dela continuam, só ficam sem categoria.',
+    categories: 'Categorias', catHabits: (n) => `${n} ${n === 1 ? 'hábito' : 'hábitos'}`,
+    catSummary: '{d} de {t} feitas', catTimeLeft: '{m} restantes', catEmpty: 'Nenhum hábito nesta categoria ainda.',
+    catEmptyAdd: 'Adicionar hábito aqui',
   },
   en: {
     daysShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -125,6 +134,15 @@ const I18N = {
     testSent: 'Test reminder in 5 seconds. You can lock your phone.', testBody: 'Reminders are working. Nice.',
     streakBody: '🔥 {n} in a row. Keep it alive.', channelName: 'Habit reminders', channelDesc: 'Reminders for your habits',
     ex: ['Drink 3L of water', 'Workout', 'Read 10 pages', 'Change the bed sheets'],
+    defaultCats: [['Home', '🏠'], ['Work', '💼'], ['Health', '💪'], ['Study', '📚']],
+    category: 'Category', allCats: 'All', noCat: 'No category', newCat: 'New category', editCat: 'Edit category',
+    addCat: '+ New', catName: 'Name', catNamePh: 'e.g. Home, Work, Pools', catColor: 'Color',
+    saveCat: 'Save category', catSaved: 'Category saved', catDeleted: 'Category deleted',
+    catExists: 'A category with that name already exists',
+    confirmDeleteCat: 'Delete the category "{t}"? Its habits stay, they just lose the category.',
+    categories: 'Categories', catHabits: (n) => `${n} ${n === 1 ? 'habit' : 'habits'}`,
+    catSummary: '{d} of {t} done', catTimeLeft: '{m} left', catEmpty: 'No habits in this category yet.',
+    catEmptyAdd: 'Add a habit here',
   },
 };
 const lang = () => (state.settings && I18N[state.settings.lang] ? state.settings.lang : 'pt-BR');
@@ -167,8 +185,21 @@ const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)'
 // =========================================================
 // State & storage
 // =========================================================
-const DEFAULT_SETTINGS = { sound: true, lang: 'pt-BR' };
-let state = { tasks: [], log: [], settings: { ...DEFAULT_SETTINGS } };
+const DEFAULT_SETTINGS = { sound: true, lang: 'pt-BR', cat: 'all' };
+const CAT_COLORS = ['#3346f0', '#19c79a', '#ff5a36', '#e8a800', '#a64bf4', '#ef4f9a', '#0ea5e9', '#6b7280'];
+const CAT_EMOJIS = ['🏠', '💼', '💪', '📚', '🏊', '💰', '🛒', '🧹', '🚗', '🐶', '❤️', '🎯', '🧠', '🌱', '🛠️', '📦'];
+let state = { tasks: [], log: [], categories: null, settings: { ...DEFAULT_SETTINGS } };
+
+function seedCategories() {
+  state.categories = L().defaultCats.map(([name, emoji], i) => ({ id: uid(), name, emoji, color: CAT_COLORS[i] }));
+}
+const catById = (id) => (state.categories || []).find((c) => c.id === id) || null;
+function fixCategories() {
+  if (!Array.isArray(state.categories)) seedCategories();
+  // a filter pointing at a deleted category falls back to "all"
+  const c = state.settings.cat;
+  if (c !== 'all' && c !== 'none' && !catById(c)) state.settings.cat = 'all';
+}
 
 async function loadState() {
   let raw = null;
@@ -184,6 +215,7 @@ async function loadState() {
     } catch (e) { console.warn('bad saved data', e); }
   }
   migrate();
+  fixCategories();
 }
 
 // Old "weekly" habits become "every 7 days", due 7 days after the last check-off.
@@ -520,6 +552,8 @@ function taskHTML(task, kind, justDone) {
     const late = (task.freq === 'once' || task.freq === 'interval') && task.date && task.date < todayKey();
     meta.push(`<span class="${late ? 'late' : ''}">${repeatLabel(task)}</span>`);
   }
+  const tcat = activeCat() === 'all' ? catById(task.categoryId) : null;
+  if (tcat) meta.unshift(`<span class="cat-tag" style="--c:${tcat.color}"><i class="cat-dot"></i>${esc(tcat.name)}</span>`);
   if (task.duration) meta.push(`<span>⏱ ${fmtDur(task.duration)}</span>`);
   if (task.remind && task.time) meta.push(`<span>⏰ ${task.time}</span>`);
   if (s >= 2) meta.push(`<span class="streak">🔥 ${s}</span>`);
@@ -539,8 +573,45 @@ function taskHTML(task, kind, justDone) {
     </li>`;
 }
 
+// ---------- Categories ----------
+const activeCat = () => state.settings.cat || 'all';
+function inCat(task, cat = activeCat()) {
+  if (cat === 'all') return true;
+  if (cat === 'none') return !task.categoryId || !catById(task.categoryId);
+  return task.categoryId === cat;
+}
+function catChipsHTML() {
+  const cats = state.categories || [];
+  if (!cats.length) return '';
+  const { todo } = categorize();
+  const pending = (cat) => todo.filter((x) => inCat(x, cat)).length;
+  const hasUncat = state.tasks.some((x) => inCat(x, 'none'));
+  const cur = activeCat();
+  const chip = (id, label, color, n) => `
+    <button class="cat-chip ${cur === id ? 'on' : ''}" data-act="cat" data-cat="${id}" style="--c:${color}" aria-pressed="${cur === id}">
+      ${label}${n ? `<span class="cat-n">${n}</span>` : ''}
+    </button>`;
+  return `<div class="cat-bar" role="group" aria-label="${t('categories')}">
+    ${chip('all', t('allCats'), 'var(--ink)', pending('all'))}
+    ${cats.map((c) => chip(c.id, `<span aria-hidden="true">${c.emoji}</span> ${esc(c.name)}`, c.color, pending(c.id))).join('')}
+    ${hasUncat ? chip('none', t('noCat'), 'var(--ink-soft)', pending('none')) : ''}
+    <button class="cat-chip add" data-act="new-cat" aria-label="${t('newCat')}">+</button>
+  </div>`;
+}
+function setCat(id) {
+  state.settings.cat = id;
+  save();
+  renderLists();
+  const on = $('.cat-bar .on');
+  if (on) on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+}
+
 function renderLists({ justDone } = {}) {
-  const { todo, done, later } = categorize();
+  const all = categorize();
+  const cat = activeCat();
+  const todo = all.todo.filter((x) => inCat(x));
+  const done = all.done.filter((x) => inCat(x));
+  const later = all.later.filter((x) => inCat(x));
   const el = $('#lists');
 
   if (state.tasks.length === 0) {
@@ -554,7 +625,24 @@ function renderLists({ justDone } = {}) {
     return;
   }
 
-  let html = `<div class="group"><div class="group-head"><h3>${t('todo')}</h3><span class="count">${todo.length}</span></div>`;
+  const scrollX = ($('.cat-bar') || {}).scrollLeft || 0;
+  let html = catChipsHTML();
+  if (cat !== 'all') {
+    const c = catById(cat);
+    const total = todo.length + done.length;
+    const mins = todo.reduce((sum, x) => sum + (x.duration || 0), 0);
+    html += `<div class="cat-summary" style="--c:${c ? c.color : 'var(--ink-soft)'}">
+      <strong>${c ? `${c.emoji} ${esc(c.name)}` : t('noCat')}</strong>
+      <span>${total ? t('catSummary', { d: done.length, t: total }) : ''}${mins ? ` · ⏱ ${t('catTimeLeft', { m: fmtDur(mins) })}` : ''}</span>
+      ${c ? `<button class="cat-edit" data-act="edit-cat" data-cat="${c.id}" aria-label="${t('editCat')}">✎</button>` : ''}
+    </div>`;
+  }
+  if (cat !== 'all' && !todo.length && !done.length && !later.length) {
+    html += `<div class="empty small-empty"><p>${t('catEmpty')}</p><button class="btn primary" data-act="add">${t('catEmptyAdd')}</button></div>`;
+    el.innerHTML = html;
+    return;
+  }
+  html += `<div class="group"><div class="group-head"><h3>${t('todo')}</h3><span class="count">${todo.length}</span></div>`;
   if (todo.length) html += `<ul class="tasks">${todo.map((x) => taskHTML(x, 'todo')).join('')}</ul>`;
   else if (done.length) html += `<div class="cleared"><big>${t('clearedTitle')}</big>${t('clearedText')}</div>`;
   else html += `<div class="cleared"><big>${t('noneTitle')}</big>${t('noneText')}</div>`;
@@ -570,6 +658,8 @@ function renderLists({ justDone } = {}) {
       ${showLater ? `<ul class="tasks">${later.map((x) => taskHTML(x, 'later')).join('')}</ul>` : ''}</div>`;
   }
   el.innerHTML = html;
+  const bar = $('.cat-bar');
+  if (bar) bar.scrollLeft = scrollX;
 }
 
 function renderStats() {
@@ -631,6 +721,16 @@ function renderStats() {
         <span class="switch"><input type="checkbox" id="set-sound" ${state.settings.sound ? 'checked' : ''}><span class="switch-ui"></span></span></label>
       <button class="row" data-act="test-notif"><span>${t('testReminder')}<small>${t('testSub')}</small></span>⏰</button>
       <button class="row" data-act="backup"><span>${t('backupRow')}<small>${t('backupSub')}</small></span>💾</button>
+    </div>
+
+    <h3>${t('categories')}</h3>
+    <div class="settings">
+      ${(state.categories || []).map((c) => {
+        const n = state.tasks.filter((x) => x.categoryId === c.id).length;
+        return `<button class="row" data-act="edit-cat" data-cat="${c.id}">
+          <span class="cat-row-name"><i class="cat-dot" style="--c:${c.color}"></i>${c.emoji} ${esc(c.name)}<small>${t('catHabits', { n })}</small></span>✎</button>`;
+      }).join('')}
+      <button class="row add-row" data-act="new-cat"><span>${t('newCat')}</span>＋</button>
     </div>
   `;
   $('#set-sound').addEventListener('change', (e) => { state.settings.sound = e.target.checked; save(); });
@@ -793,9 +893,11 @@ const form = {
   title: $('#f-title'), emoji: $('#f-emoji'), freq: $('#f-freq'), days: $('#f-days'),
   date: $('#f-date'), remind: $('#f-remind'), time: $('#f-time'), diff: $('#f-diff'),
   every: $('#f-every'), everyQuick: $('#f-every-quick'),
-  durH: $('#f-dur-h'), durM: $('#f-dur-m'), durQuick: $('#f-dur-quick'),
+  durH: $('#f-dur-h'), durM: $('#f-dur-m'), durQuick: $('#f-dur-quick'), cat: $('#f-cat'),
 };
 let draft = null;
+let catDraft = null;
+let catReturnToTask = false;
 
 form.emoji.innerHTML = EMOJIS.map((e) => `<button type="button" role="radio" data-v="${e}" aria-label="${e}">${e}</button>`).join('');
 function buildFormOptions() {
@@ -818,6 +920,7 @@ function openSheet(task = null) {
   draft = task ? { ...task, days: [...task.days] } : {
     title: '', emoji: '✅', freq: 'daily', days: [1, 3, 5], date: todayKey(), every: 30,
     remind: false, time: '09:00', diff: 2, duration: 0,
+    categoryId: ['all', 'none'].includes(activeCat()) ? null : activeCat(),
   };
   $('#sheet-title').textContent = task ? t('editHabit') : t('newHabit');
   $('#btn-delete').hidden = !task;
@@ -851,7 +954,21 @@ function syncSheet() {
   $$('button', form.everyQuick).forEach((b) => b.setAttribute('aria-pressed', +b.dataset.d === every));
   $('#row-time').hidden = !form.remind.checked;
   $('#freq-hint').textContent = t(FREQ_HINT_KEYS[draft.freq], { n: every || '…' });
+  renderCatPicker();
 }
+function renderCatPicker() {
+  const cur = catById(draft.categoryId) ? draft.categoryId : null;
+  const opt = (id, label, color) =>
+    `<button type="button" role="radio" class="cat-opt" data-v="${id || ''}" style="--c:${color}" aria-checked="${cur === id}">${label}</button>`;
+  form.cat.innerHTML = opt(null, t('noCat'), 'var(--ink-soft)')
+    + (state.categories || []).map((c) => opt(c.id, `${c.emoji} ${esc(c.name)}`, c.color)).join('')
+    + `<button type="button" class="cat-opt add" data-act="new-cat-from-task">${t('addCat')}</button>`;
+}
+form.cat.addEventListener('click', (e) => {
+  const b = e.target.closest('.cat-opt'); if (!b || b.dataset.act) return;
+  draft.categoryId = b.dataset.v || null;
+  renderCatPicker();
+});
 
 form.emoji.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { draft.emoji = b.dataset.v; syncSheet(); } });
 form.freq.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { draft.freq = b.dataset.v; syncSheet(); } });
@@ -900,6 +1017,7 @@ $('#task-form').addEventListener('submit', async (e) => {
     remind: form.remind.checked, time: form.time.value || '09:00',
     diff: draft.diff,
     duration: formMinutes(),
+    categoryId: catById(draft.categoryId) ? draft.categoryId : null,
   };
   const wasEditing = !!editing;
   if (editing) Object.assign(editing, data);
@@ -925,6 +1043,66 @@ $('#btn-delete').addEventListener('click', () => {
 });
 
 // =========================================================
+// Category sheet
+// =========================================================
+const catForm = { name: $('#c-name'), emoji: $('#c-emoji'), color: $('#c-color') };
+catForm.emoji.innerHTML = CAT_EMOJIS.map((e) => `<button type="button" role="radio" data-v="${e}" aria-label="${e}">${e}</button>`).join('');
+catForm.color.innerHTML = CAT_COLORS.map((c) => `<button type="button" role="radio" data-v="${c}" style="--c:${c}" aria-label="${c}"></button>`).join('');
+
+function openCatSheet(cat = null, fromTask = false) {
+  catReturnToTask = fromTask;
+  const used = (state.categories || []).map((c) => c.color);
+  catDraft = cat ? { ...cat } : {
+    id: null, name: '', emoji: CAT_EMOJIS[(state.categories || []).length % CAT_EMOJIS.length],
+    color: CAT_COLORS.find((c) => !used.includes(c)) || CAT_COLORS[0],
+  };
+  $('#cat-title').textContent = cat ? t('editCat') : t('newCat');
+  $('#btn-cat-delete').hidden = !cat;
+  catForm.name.value = catDraft.name;
+  syncCatSheet();
+  $('#cat-sheet').hidden = false;
+  if (!cat) setTimeout(() => catForm.name.focus(), 250);
+}
+function closeCatSheet() { $('#cat-sheet').hidden = true; catDraft = null; }
+function syncCatSheet() {
+  $$('button', catForm.emoji).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === catDraft.emoji));
+  $$('button', catForm.color).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === catDraft.color));
+  $('#cat-preview').innerHTML = `<span class="cat-chip on" style="--c:${catDraft.color}">${catDraft.emoji} ${esc(catForm.name.value.trim() || t('catName'))}</span>`;
+}
+catForm.emoji.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { catDraft.emoji = b.dataset.v; syncCatSheet(); } });
+catForm.color.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { catDraft.color = b.dataset.v; syncCatSheet(); } });
+catForm.name.addEventListener('input', syncCatSheet);
+
+$('#cat-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = catForm.name.value.trim();
+  if (!name) { catForm.name.focus(); toast(t('needName')); return; }
+  const clash = state.categories.find((c) => c.name.toLowerCase() === name.toLowerCase() && c.id !== catDraft.id);
+  if (clash) { toast(t('catExists')); return; }
+  let id = catDraft.id;
+  if (id) Object.assign(catById(id), { name, emoji: catDraft.emoji, color: catDraft.color });
+  else { id = uid(); state.categories.push({ id, name, emoji: catDraft.emoji, color: catDraft.color }); }
+  const returning = catReturnToTask;
+  closeCatSheet();
+  save();
+  if (returning && draft) { draft.categoryId = id; renderCatPicker(); }
+  render();
+  toast(t('catSaved'));
+});
+$('#btn-cat-delete').addEventListener('click', () => {
+  if (!catDraft || !catDraft.id) return;
+  if (!confirm(t('confirmDeleteCat', { t: catDraft.name }))) return;
+  const id = catDraft.id;
+  state.categories = state.categories.filter((c) => c.id !== id);
+  state.tasks.forEach((x) => { if (x.categoryId === id) x.categoryId = null; });
+  if (state.settings.cat === id) state.settings.cat = 'all';
+  closeCatSheet();
+  save();
+  render();
+  toast(t('catDeleted'));
+});
+
+// =========================================================
 // Backup
 // =========================================================
 function openBackup() {
@@ -943,6 +1121,7 @@ $('#btn-restore').addEventListener('click', () => {
     if (!Array.isArray(data.tasks) || !Array.isArray(data.log)) throw new Error('shape');
     if (!confirm(t('confirmRestore'))) return;
     state = { ...data, settings: { ...DEFAULT_SETTINGS, ...(data.settings || {}) } };
+    fixCategories();
     migrate();
     closeSheets(); save(); applyStatic(); render();
     toast(t('restored'), true);
@@ -1036,14 +1215,16 @@ async function testNotification() {
 // Examples
 // =========================================================
 function addExamples() {
+  const cats = state.categories || [];
+  const cid = (i) => (cats[i] ? cats[i].id : null);
   const base = { best: 0, date: null, every: null };
   const now = Date.now();
   const ex = L().ex;
   state.tasks.push(
-    { ...base, id: uid(), createdAt: now, title: ex[0], emoji: '💧', freq: 'daily', days: [], remind: true, time: '10:00', diff: 1, duration: 0 },
-    { ...base, id: uid(), createdAt: now + 1, title: ex[1], emoji: '💪', freq: 'days', days: [1, 3, 5], remind: true, time: '18:00', diff: 3, duration: 60 },
-    { ...base, id: uid(), createdAt: now + 2, title: ex[2], emoji: '📚', freq: 'daily', days: [], remind: true, time: '22:00', diff: 1, duration: 20 },
-    { ...base, id: uid(), createdAt: now + 3, title: ex[3], emoji: '🛏️', freq: 'interval', every: 15, date: todayKey(), days: [], remind: true, time: '19:00', diff: 2, duration: 20 },
+    { ...base, id: uid(), createdAt: now, title: ex[0], emoji: '💧', freq: 'daily', days: [], remind: true, time: '10:00', diff: 1, duration: 0, categoryId: cid(2) },
+    { ...base, id: uid(), createdAt: now + 1, title: ex[1], emoji: '💪', freq: 'days', days: [1, 3, 5], remind: true, time: '18:00', diff: 3, duration: 60, categoryId: cid(2) },
+    { ...base, id: uid(), createdAt: now + 2, title: ex[2], emoji: '📚', freq: 'daily', days: [], remind: true, time: '22:00', diff: 1, duration: 20, categoryId: cid(3) },
+    { ...base, id: uid(), createdAt: now + 3, title: ex[3], emoji: '🛏️', freq: 'interval', every: 15, date: todayKey(), days: [], remind: true, time: '19:00', diff: 2, duration: 20, categoryId: cid(0) },
   );
   save();
   render();
@@ -1063,10 +1244,11 @@ function setTab(tab) {
 }
 
 document.addEventListener('click', (e) => {
-  const el = e.target.closest('[data-act], [data-tab], [data-close], #fab, #levelup-ok');
+  const el = e.target.closest('[data-act], [data-tab], [data-close], [data-close-cat], #fab, #levelup-ok');
   if (!el) return;
   if (el.id === 'fab') return openSheet();
   if (el.id === 'levelup-ok') { $('#levelup').hidden = true; return; }
+  if (el.dataset.closeCat !== undefined) return closeCatSheet();
   if (el.dataset.close !== undefined) return closeSheets();
   if (el.dataset.tab) return setTab(el.dataset.tab);
 
@@ -1082,6 +1264,10 @@ document.addEventListener('click', (e) => {
     case 'toggle-later': showLater = !showLater; renderLists(); break;
     case 'test-notif': testNotification(); break;
     case 'backup': openBackup(); break;
+    case 'cat': setCat(el.dataset.cat); break;
+    case 'new-cat': openCatSheet(); break;
+    case 'new-cat-from-task': openCatSheet(null, true); break;
+    case 'edit-cat': openCatSheet(catById(el.dataset.cat)); break;
   }
 });
 
@@ -1089,6 +1275,7 @@ document.addEventListener('click', (e) => {
 if (AppPlugin) {
   AppPlugin.addListener('backButton', () => {
     if (!$('#levelup').hidden) { $('#levelup').hidden = true; return; }
+    if (!$('#cat-sheet').hidden) { closeCatSheet(); return; }
     if (!$('#sheet').hidden || !$('#backup').hidden) { closeSheets(); return; }
     if (activeTab !== 'today') { setTab('today'); return; }
     AppPlugin.exitApp();
